@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>StudioForge Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pretendard:wght@300;400;500;600;700&Noto+Sans+KR:wght@400;500;700&Gothic+A1:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0c10;--bg2:#13141a;--bg3:#1a1b24;--bg4:#22232f;--border:#2a2b3a;--border2:#363748;--accent:#00d4ff;--accent2:#7c3aed;--accent3:#f59e0b;--green:#10b981;--red:#ef4444;--text:#e8e9f0;--text2:#9899ab;--text3:#5a5b6e;--sw:192px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Pretendard',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+/* 상단 */
+.topbar{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:9px;flex-shrink:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;color:var(--accent)}.logo span{color:var(--accent2)}
+.ch-btn{display:flex;align-items:center;gap:6px;padding:4px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s}
+.ch-btn:hover{border-color:var(--border2);color:var(--text)}
+.proj-name{font-size:13px;color:var(--text2);cursor:pointer;padding:4px 8px;border-radius:5px;border:1px solid transparent}
+.proj-name:hover{border-color:var(--border2)}
+.tbr{margin-left:auto;display:flex;align-items:center;gap:8px}
+.eng-tog{display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:3px;gap:3px}
+.eng-btn{padding:4px 11px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--text2);transition:all .2s}
+.eng-btn.on{background:var(--accent);color:#000}
+.eng-btn.on.fl{background:var(--accent2);color:#fff}
+.eng-btn.on.bo{background:var(--accent3);color:#000}
+.btn-rnd{background:var(--accent);color:#000;border:none;padding:6px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer}
+.btn-rnd:hover{filter:brightness(1.15)}
+.btn-sv{background:var(--bg3);color:var(--text2);border:1px solid var(--border);padding:6px 12px;border-radius:7px;font-size:12px;cursor:pointer}
+.btn-sv:hover{color:var(--text)}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);opacity:0;transition:opacity .3s;flex-shrink:0}
+.sdot.on{opacity:1}
+/* 레이아웃 */
+.app{display:flex;flex:1;overflow:hidden}
+.sidebar{width:var(--sw);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sb-ch{padding:10px 12px;border-bottom:1px solid var(--border);font-size:10px;color:var(--text3);font-weight:700;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:5px}
+.nav{display:flex;align-items:center;gap:8px;padding:9px 14px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.nav:hover{color:var(--text);background:var(--bg3)}
+.nav.on{color:var(--accent);background:var(--bg3);border-left-color:var(--accent)}
+.nav svg{width:15px;height:15px;flex-shrink:0;opacity:.7}
+.nav.on svg{opacity:1}
+.nbadge{margin-left:auto;background:var(--accent2);color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;font-weight:700}
+/* 메인 */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.page{display:none;flex:1;overflow-y:auto;flex-direction:column}
+.page.on{display:flex}
+.ph{padding:16px 22px 12px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between}
+.ph h2{font-size:18px;font-weight:700}
+.ph p{font-size:12px;color:var(--text3);margin-top:3px}
+.pb{padding:16px 22px;flex:1}
+/* 공통 */
+label{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;margin-top:13px;text-transform:uppercase;letter-spacing:.4px}
+label:first-child{margin-top:0}
+input,select,textarea{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Pretendard',sans-serif;outline:none;transition:border .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,212,255,.07)}
+select option{background:var(--bg3)}
+textarea{resize:vertical;line-height:1.65}
+input[type=range]{padding:4px 0;background:transparent;accent-color:var(--accent)}
+input[type=color]{padding:2px;height:36px;cursor:pointer}
+input[type=checkbox]{width:auto;accent-color:var(--accent);cursor:pointer}
+input[type=file]{padding:6px;font-size:12px;cursor:pointer}
+input[type=password]{font-family:monospace}
+.btn{padding:8px 15px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Pretendard',sans-serif;white-space:nowrap}
+.btn:hover{filter:brightness(1.12)}
+.btn:disabled{opacity:.35;cursor:not-allowed;filter:none}
+.bp{background:var(--accent);color:#000}
+.bv{background:var(--accent2);color:#fff}
+.ba{background:var(--accent3);color:#000}
+.bg2{background:var(--green);color:#fff}
+.bgh{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.bgh:hover{color:var(--text);border-color:var(--border2)}
+.bred{background:var(--red);color:#fff}
+.bsm{padding:5px 11px;font-size:11px}
+.brow{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.ctitle{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.hint{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5}
+.divider{height:1px;background:var(--border);margin:12px 0}
+.sr{display:flex;align-items:center;gap:9px}
+.sr input[type=range]{flex:1}
+.sv{font-size:12px;font-weight:700;color:var(--accent);min-width:40px;text-align:right}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700}
+.bc{background:rgba(0,212,255,.15);color:var(--accent)}
+.bvc{background:rgba(124,58,237,.2);color:#a78bfa}
+.bgc{background:rgba(16,185,129,.15);color:var(--green)}
+.bac{background:rgba(245,158,11,.15);color:var(--accent3)}
+.brc{background:rgba(239,68,68,.15);color:var(--red)}
+.prog{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin:5px 0}
+.prog-f{height:100%;border-radius:2px;transition:width .3s;background:var(--accent)}
+.log-box{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px;height:120px;overflow-y:auto;font-family:monospace;font-size:11px;line-height:1.7}
+.l-ok{color:var(--green)}.l-err{color:var(--red)}.l-info{color:var(--accent)}.l-warn{color:var(--accent3)}
+/* 토글 */
+.trow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.trow:last-child{border-bottom:none}
+.tinfo{flex:1}.tl{font-size:13px;color:var(--text)}.td{font-size:11px;color:var(--text3);margin-top:1px}
+.tog{position:relative;width:38px;height:20px;flex-shrink:0;margin-left:10px}
+.tog input{opacity:0;width:0;height:0}
+.ts{position:absolute;inset:0;background:var(--border2);border-radius:10px;cursor:pointer;transition:.2s}
+.ts:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.tog input:checked+.ts{background:var(--accent)}
+.tog input:checked+.ts:before{transform:translateX(18px)}
+/* 스토리보드 */
+.sb-tb{display:flex;align-items:center;gap:7px;padding:9px 16px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap}
+.sb-tb select{width:auto;padding:5px 9px;font-size:12px}
+.sep{width:1px;height:18px;background:var(--border);flex-shrink:0;margin:0 2px}
+/* 씬 카드 */
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.sc{background:var(--bg3);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border .2s}
+.sc:hover{border-color:var(--border2)}
+.sc.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.sc-hd{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border)}
+.sc-num{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.5px;flex-shrink:0}
+.sc-title{font-size:12px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-cb{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.sc-cb input[type=checkbox]{width:14px;height:14px}
+.sc-img{width:100%;aspect-ratio:16/9;background:var(--bg4);position:relative;overflow:hidden}
+.sc-img img{width:100%;height:100%;object-fit:cover;display:block}
+.sc-ph{width:100%;aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg4);color:var(--text3);font-size:11px;gap:5px}
+.sc-body{padding:8px 10px}
+.sc-narr{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sc-prompt{font-size:10px;color:var(--text3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:7px}
+.sc-acts{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.sc-st{padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700}
+.ss-p{background:var(--bg4);color:var(--text3)}
+.ss-g{background:rgba(0,212,255,.1);color:var(--accent)}
+.ss-i{background:rgba(0,212,255,.12);color:var(--accent)}
+.ss-t{background:rgba(124,58,237,.15);color:#a78bfa}
+.ss-d{background:rgba(16,185,129,.12);color:var(--green)}
+.ss-e{background:rgba(239,68,68,.12);color:var(--red)}
+.ib{width:24px;height:24px;border-radius:5px;border:1px solid var(--border);background:var(--bg4);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;flex-shrink:0}
+.ib:hover{border-color:var(--accent);color:var(--accent)}
+/* 영상 효과 뱃지 */
+.fx-badge{font-size:9px;background:rgba(124,58,237,.2);color:#a78bfa;padding:1px 5px;border-radius:3px;cursor:pointer}
+.fx-badge:hover{background:rgba(124,58,237,.35)}
+/* 타임라인 */
+.tl-pv{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:14px;overflow:hidden}
+.tl-pl{position:relative;max-width:540px;width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.tl-pl img{width:100%;height:100%;object-fit:cover;display:block}
+.tl-sub{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:5px 12px;border-radius:4px;font-size:14px;display:none;text-align:center;max-width:85%}
+.tl-tracks{padding:9px 13px 4px;overflow-x:auto;background:var(--bg2);border-top:1px solid var(--border)}
+.tl-track{display:flex;align-items:center;margin-bottom:5px}
+.tl-lbl{width:50px;font-size:9px;color:var(--text3);flex-shrink:0;text-align:right;padding-right:7px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.tl-cont{display:flex;gap:2px;flex:1}
+.clip{border-radius:5px;height:32px;display:flex;align-items:center;padding:0 6px;font-size:10px;font-weight:600;cursor:pointer;overflow:hidden;transition:filter .15s;border:1px solid transparent;white-space:nowrap;flex-shrink:0}
+.clip:hover{filter:brightness(1.2)}
+.clip.sel{border-color:var(--accent)}
+.clip-v{background:rgba(0,212,255,.18);color:var(--accent)}
+.clip-a{background:rgba(124,58,237,.18);color:#a78bfa}
+.clip-s{background:rgba(245,158,11,.13);color:var(--accent3)}
+.tl-ctrl{display:flex;align-items:center;gap:8px;padding:7px 13px;border-top:1px solid var(--border);background:var(--bg3);flex-shrink:0}
+.tc{width:27px;height:27px;border-radius:6px;border:1px solid var(--border);background:var(--bg4);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px}
+.tc:hover{color:var(--text)}
+.tc-t{font-size:11px;color:var(--text2);font-family:monospace}
+/* 미리보기 */
+.pv-w{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:14px}
+.pv-pl{position:relative;max-width:720px;width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+.pv-pl img{width:100%;height:100%;object-fit:cover;display:block}
+.pv-sub{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.78);color:#fff;padding:5px 12px;border-radius:4px;font-size:15px;display:none;text-align:center;max-width:85%}
+.pv-ctrl{display:flex;align-items:center;gap:8px;padding:9px 16px;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0}
+/* 음성 */
+.vf{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px}
+.vfb{padding:3px 9px;border-radius:5px;border:1px solid var(--border);background:var(--bg4);color:var(--text3);font-size:11px;cursor:pointer;font-family:'Pretendard',sans-serif;transition:all .15s}
+.vfb:hover{border-color:var(--border2)}
+.vfb.on{background:var(--accent);color:#000;border-color:var(--accent)}
+.vlist{display:flex;flex-direction:column;gap:3px;max-height:200px;overflow-y:auto}
+.vi{display:flex;align-items:center;gap:7px;padding:8px 9px;border-radius:7px;border:1px solid var(--border);background:var(--bg4);cursor:pointer;transition:border .15s}
+.vi:hover{border-color:var(--border2)}
+.vi.sel{border-color:var(--accent)}
+.vi-nm{font-size:12px;font-weight:500;flex:1}
+.vi-ds{font-size:10px;color:var(--text3)}
+.vi-pv{background:none;border:1px solid var(--border);color:var(--text3);border-radius:4px;padding:2px 7px;font-size:10px;cursor:pointer}
+.vi-pv:hover{border-color:var(--accent);color:var(--accent)}
+/* 썸네일 */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:10px}
+.ti{border-radius:9px;overflow:hidden;border:2px solid var(--border);cursor:pointer;transition:border .2s;position:relative}
+.ti:hover{border-color:var(--border2)}
+.ti.sel{border-color:var(--accent)}
+.ti img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.ti-lbl{position:absolute;top:5px;left:5px;background:rgba(0,0,0,.7);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;color:#fff}
+.ti-dl{position:absolute;bottom:5px;right:5px;background:var(--accent);color:#000;border:none;border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-weight:700}
+/* 캐릭터 */
+.char-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.char-item{background:var(--bg4);border:1px solid var(--border);border-radius:9px;padding:10px;display:flex;gap:10px;align-items:flex-start}
+.char-thumb{width:50px;height:50px;border-radius:8px;border:2px solid var(--border);overflow:hidden;flex-shrink:0;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:11px;cursor:pointer;position:relative}
+.char-thumb img{width:100%;height:100%;object-fit:cover}
+.char-info{flex:1;display:flex;flex-direction:column;gap:5px}
+.char-info input{padding:5px 8px;font-size:12px}
+.char-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;flex-shrink:0;padding:2px}
+.char-del:hover{color:var(--red)}
+.char-add{display:flex;align-items:center;justify-content:center;gap:6px;border:2px dashed var(--border2);border-radius:9px;padding:12px;cursor:pointer;transition:all .15s;font-size:13px;color:var(--text3)}
+.char-add:hover{border-color:var(--accent);color:var(--accent)}
+/* 참조 이미지 */
+.ref-list{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
+.ref-item{width:64px;height:64px;border-radius:7px;border:2px solid var(--border);overflow:hidden;position:relative;cursor:pointer}
+.ref-item img{width:100%;height:100%;object-fit:cover}
+.ref-del{position:absolute;top:2px;right:2px;width:15px;height:15px;background:var(--red);border-radius:50%;border:none;color:#fff;font-size:8px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ref-add{width:64px;height:64px;border-radius:7px;border:2px dashed var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--text3);transition:all .15s}
+.ref-add:hover{border-color:var(--accent);color:var(--accent)}
+/* 자막 미리보기 */
+.sub-pw{background:var(--bg);border:1px solid var(--border);border-radius:8px;aspect-ratio:16/9;position:relative;overflow:hidden;max-width:300px;margin-top:6px}
+.sub-pbg{width:100%;height:100%;background:#1a1a2e}
+#subPrev{position:absolute;left:50%;transform:translateX(-50%);padding:5px 12px;border-radius:4px;white-space:nowrap;pointer-events:none;transition:all .2s}
+/* 다운로드 버튼 그룹 */
+.dl-grp{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+/* 영상 효과 패널 */
+.fx-panel{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:11px;margin-top:8px}
+.fx-panel-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.fx-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.fx-opt{padding:6px 4px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:11px;cursor:pointer;text-align:center;transition:all .15s}
+.fx-opt:hover{border-color:var(--border2);color:var(--text)}
+.fx-opt.on{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.06)}
+/* Flow 패널 */
+.flow-p{background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.25);border-radius:9px;padding:11px;margin-bottom:11px}
+.flow-pt{font-size:12px;font-weight:700;color:#a78bfa;margin-bottom:8px}
+.fdot{width:7px;height:7px;border-radius:50%;background:var(--text3);display:inline-block}
+.fdot.on{background:var(--green);animation:bl 1.5s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+/* API 설정 */
+.api-hd{display:flex;align-items:center;justify-content:space-between;margin-top:13px;margin-bottom:3px}
+.api-lbl{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px}
+.api-lnk{font-size:10px;color:var(--accent);text-decoration:none;opacity:.7}
+.api-lnk:hover{opacity:1}
+.api-row{display:flex;gap:7px;margin-top:4px}
+.api-row input{flex:1}
+/* YouTube */
+.yt-card{display:flex;align-items:center;gap:10px;padding:11px 13px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-radius:8px}
+/* 모달 */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;width:500px;max-width:95vw;max-height:88vh;overflow-y:auto}
+.modal-ttl{font-size:16px;font-weight:700;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between}
+.modal-cl{background:none;border:none;color:var(--text2);cursor:pointer;font-size:17px}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px;color:var(--text3);text-align:center;gap:6px}
+.empty h3{font-size:14px;color:var(--text2)}
+.empty p{font-size:12px;line-height:1.6}
+/* 다운 패널 */
+.dl-panel{background:var(--bg4);border:1px solid var(--border2);border-radius:8px;padding:11px;margin-top:8px}
+.dl-panel-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">STUDIO<span>FORGE</span></div>
+  <div class="ch-btn" onclick="goChannels()"><span id="topIcon">📺</span><span id="topName">채널</span></div>
+  <span style="color:var(--text3);font-size:13px">/</span>
+  <span class="proj-name" id="projEl" onclick="renameProj()">새 프로젝트</span>
+  <span class="sdot" id="sdot"></span>
+  <div class="tbr">
+    <span style="font-size:10px;color:var(--text3);font-weight:700">엔진</span>
+    <div class="eng-tog">
+      <button class="eng-btn on" id="engApi" onclick="setEng('api')">API</button>
+      <button class="eng-btn fl" id="engFlow" onclick="setEng('flow')">Flow</button>
+      <button class="eng-btn bo" id="engBoth" onclick="setEng('both')">둘 다</button>
+    </div>
+    <button class="btn-sv" onclick="manualSave()">저장</button>
+    <button class="btn-rnd" onclick="doRender()">렌더링</button>
+  </div>
+</div>
+
+<div class="app">
+<div class="sidebar">
+  <div class="sb-ch" id="sbCh">프로젝트</div>
+  <div class="nav on" onclick="gp('script')" data-p="script"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>대본</div>
+  <div class="nav" onclick="gp('storyboard')" data-p="storyboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>스토리보드<span class="nbadge" id="sbBadge">0</span></div>
+  <div class="nav" onclick="gp('timeline')" data-p="timeline"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>타임라인</div>
+  <div class="nav" onclick="gp('preview')" data-p="preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>미리보기</div>
+  <div class="nav" onclick="gp('thumbnail')" data-p="thumbnail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>썸네일</div>
+  <div class="nav" onclick="gp('youtube')" data-p="youtube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>YouTube 업로드</div>
+  <div class="nav" onclick="gp('settings')" data-p="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>설정</div>
+</div>
+
+<div class="main">
+
+<!-- 대본 -->
+<div id="page-script" class="page on">
+  <div class="ph"><div><h2>대본</h2><p>스크립트 입력 → 장면 분할 → 이미지/TTS 생성</p></div></div>
+  <div class="pb">
+    <div class="g2" style="gap:16px;align-items:start">
+      <div>
+        <div class="card">
+          <div class="ctitle">프로젝트 정보</div>
+          <label>영상 제목</label>
+          <input type="text" id="vidTitle" placeholder="영상 제목 입력" oninput="autoSave()">
+        </div>
+        <div class="card">
+          <div class="ctitle">장면 분할 설정</div>
+          <label>장면당 문장 수</label>
+          <div style="display:flex;gap:6px;margin-top:4px" id="splitOpts">
+            <button class="btn bgh bsm" onclick="setSplit(1,this)">1문장</button>
+            <button class="btn bp bsm" onclick="setSplit(2,this)">2문장</button>
+            <button class="btn bgh bsm" onclick="setSplit(3,this)">3문장</button>
+            <button class="btn bgh bsm" onclick="setSplit(4,this)">4문장</button>
+            <button class="btn bgh bsm" onclick="setSplit(5,this)">5문장</button>
+          </div>
+          <div class="hint" style="margin-top:8px">분할 버튼을 누르기 전에 선택하세요</div>
+        </div>
+        <div class="card">
+          <div class="ctitle">이미지 공통 설정</div>
+          <label>이미지 스타일</label>
+          <select id="globalStyle" onchange="autoSave()">
+            <option value="comic book style, halftone dots, vibrant colors, detailed">만화</option>
+            <option value="cinematic photo, 4K, dramatic lighting, ultra realistic">시네마틱 사진</option>
+            <option value="anime style, detailed illustration, vibrant">애니메이션</option>
+            <option value="watercolor painting, soft colors, artistic">수채화</option>
+            <option value="flat design, minimal, clean, geometric">플랫 디자인</option>
+            <option value="3d render, realistic, studio lighting, detailed">3D 렌더링</option>
+            <option value="">커스텀 (아래 프롬프트만 사용)</option>
+          </select>
+          <label>전체 이미지 공통 프롬프트</label>
+          <textarea id="globalPrompt" rows="3" placeholder="모든 이미지에 공통으로 적용할 프롬프트 (예: consistent character design, same art style throughout, warm color palette)" oninput="autoSave()"></textarea>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="height:auto">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div class="ctitle" style="margin:0">대본 입력</div>
+            <span style="font-size:11px;color:var(--text3)" id="wc"></span>
+          </div>
+          <textarea id="scriptIn" rows="20" placeholder="여기에 대본을 입력하세요.
+
+[장면1] 인트로
+내레이션 내용을 입력하세요...
+
+[장면2] 본론
+내레이션 내용...
+
+[장면N] 형식이나 빈 줄로 장면을 구분하세요." oninput="countW();autoSave()" style="min-height:360px"></textarea>
+          <div class="brow">
+            <button class="btn bp" onclick="splitScenes()">✂ 장면 분할</button>
+            <button class="btn bv bsm" onclick="analyzeAI()">✦ AI 분석 + 프롬프트 생성</button>
+            <button class="btn bgh bsm" onclick="loadSample()">샘플</button>
+            <button class="btn bgh bsm" onclick="clearScript()">초기화</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 스토리보드 -->
+<div id="page-storyboard" class="page" style="flex-direction:column">
+  <div class="sb-tb">
+    <select id="sbModel" style="width:160px" onchange="autoSave()">
+      <option value="imagen3">Imagen 3 (Gemini)</option>
+      <option value="imagen3fast">Imagen 3 Fast</option>
+      <option value="fal-flux">fal.ai FLUX</option>
+    </select>
+    <div class="sep"></div>
+    <select id="sbRatio" style="width:90px" onchange="autoSave()">
+      <option value="16:9">16:9</option><option value="9:16">9:16</option><option value="1:1">1:1</option>
+    </select>
+    <div class="sep"></div>
+    <!-- 전체 생성 -->
+    <button class="btn bp bsm" onclick="genAllImg()">전체 이미지 생성</button>
+    <button class="btn bgh bsm" onclick="genAllTts()">전체 TTS</button>
+    <div class="sep"></div>
+    <!-- 선택 씬 액션 -->
+    <button class="btn bgh bsm" onclick="genSelImg()">선택 이미지</button>
+    <button class="btn bgh bsm" onclick="genSelTts()">선택 TTS</button>
+    <button class="btn bv bsm" onclick="applyFxSel()">선택 효과 적용</button>
+    <button class="btn ba bsm" onclick="applyFxAll()">전체 효과 적용</button>
+    <div class="sep"></div>
+    <!-- 다운로드 -->
+    <button class="btn bgh bsm" onclick="dlSelImg()">선택 이미지↓</button>
+    <button class="btn bgh bsm" onclick="dlSelTts()">선택 TTS↓</button>
+    <button class="btn bgh bsm" onclick="dlAllImg()">전체 이미지↓</button>
+    <button class="btn bgh bsm" onclick="dlAllTtsMerged()">전체 TTS 합치기↓</button>
+    <div class="sep"></div>
+    <button class="btn bgh bsm" onclick="addScene()">+ 장면</button>
+    <div style="margin-left:auto;font-size:11px;color:var(--text3)" id="sbCnt">0개 장면</div>
+  </div>
+
+  <!-- Flow 바 -->
+  <div id="sbFlowBar" style="display:none;padding:7px 16px;background:rgba(124,58,237,.04);border-bottom:1px solid rgba(124,58,237,.2);display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+    <span class="fdot" id="fdot"></span>
+    <span id="fstat" style="font-size:12px;color:var(--text2)">Google Flow 연결 대기</span>
+    <button class="btn bgh bsm" onclick="openFlow()">Flow 열기</button>
+    <button class="btn bv bsm" onclick="sendToFlow('image')">이미지 → Flow</button>
+    <button class="btn bv bsm" onclick="sendToFlow('video')">영상 → Flow</button>
+  </div>
+
+  <!-- 진행 로그 -->
+  <div id="sbLogWrap" style="display:none;padding:6px 16px;background:var(--bg2);border-bottom:1px solid var(--border)">
+    <div class="log-box" id="sbLog"></div>
+  </div>
+
+  <div style="flex:1;overflow-y:auto;padding:13px">
+    <div class="sgrid" id="sceneGrid"></div>
+  </div>
+</div>
+
+<!-- 타임라인 -->
+<div id="page-timeline" class="page" style="flex-direction:row">
+  <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div class="tl-pv">
+      <div class="tl-pl" id="tlPl">
+        <img id="tlImg" src="" alt="" style="display:none">
+        <div id="tlEmpty" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--text3);font-size:13px;flex-direction:column;gap:7px">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>이미지를 생성하세요
+        </div>
+        <div class="tl-sub" id="tlSub"></div>
+        <div style="position:absolute;top:6px;left:6px"><span class="badge bc" id="tlSN">장면 1</span></div>
+        <div style="position:absolute;top:6px;right:6px;font-size:9px;color:rgba(255,255,255,.4);background:rgba(0,0,0,.5);padding:2px 5px;border-radius:3px" id="tlFX"></div>
+      </div>
+    </div>
+    <div class="tl-tracks">
+      <div class="tl-track"><div class="tl-lbl">영상</div><div class="tl-cont" id="tlV"></div></div>
+      <div class="tl-track"><div class="tl-lbl">TTS</div><div class="tl-cont" id="tlA"></div></div>
+      <div class="tl-track"><div class="tl-lbl">자막</div><div class="tl-cont" id="tlS"></div></div>
+    </div>
+    <div class="tl-ctrl">
+      <button class="tc" onclick="tlPrev()">⏮</button>
+      <button class="tc" onclick="tlPP()" id="tlPBtn">▶</button>
+      <button class="tc" onclick="tlNext()">⏭</button>
+      <span class="tc-t" id="tlCur">0:00</span>
+      <span style="color:var(--text3);font-size:10px">/</span>
+      <span class="tc-t" id="tlTot">0:00</span>
+      <div style="flex:1"></div>
+      <button class="btn bgh bsm" onclick="gp('storyboard')">← 스토리보드</button>
+      <button class="btn bgh bsm" onclick="gp('preview')">미리보기 →</button>
+    </div>
+  </div>
+  <div style="width:210px;background:var(--bg2);border-left:1px solid var(--border);padding:13px;overflow-y:auto;flex-shrink:0">
+    <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px">장면 속성</div>
+    <div id="tlProp" style="font-size:12px;color:var(--text3)">장면을 선택하세요</div>
+  </div>
+</div>
+
+<!-- 미리보기 -->
+<div id="page-preview" class="page" style="flex-direction:column">
+  <div style="display:flex;align-items:center;gap:8px;padding:7px 14px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0">
+    <span style="font-size:13px;font-weight:600">미리보기</span>
+    <button class="btn bgh bsm" onclick="toggleFS()">전체화면</button>
+    <div class="eng-tog" style="margin-left:auto">
+      <button class="eng-btn on" onclick="setPvR('16:9',this)">16:9</button>
+      <button class="eng-btn" onclick="setPvR('9:16',this)">9:16</button>
+    </div>
+  </div>
+  <div class="pv-w" id="pvW">
+    <div class="pv-pl" id="pvPl">
+      <img id="pvImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
+      <div id="pvEmpty" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--text3);font-size:13px;flex-direction:column;gap:7px">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>이미지를 먼저 생성하세요
+      </div>
+      <div class="pv-sub" id="pvSub"></div>
+    </div>
+  </div>
+  <div class="pv-ctrl">
+    <button class="tc" onclick="pvPrev()">⏮</button>
+    <button class="tc" onclick="pvPlay()" id="pvBtn">▶</button>
+    <button class="tc" onclick="pvNext()">⏭</button>
+    <span class="tc-t" id="pvT">0:00 / 0:00</span>
+    <div style="flex:1"></div>
+    <span style="font-size:12px;color:var(--text3)" id="pvInfo">장면 0 / 0</span>
+  </div>
+</div>
+
+<!-- 썸네일 -->
+<div id="page-thumbnail" class="page">
+  <div class="ph"><div><h2>썸네일 생성기</h2><p>프롬프트를 입력해 유튜브 썸네일을 생성합니다</p></div></div>
+  <div class="pb">
+    <div class="g2" style="gap:16px;align-items:start">
+      <div>
+        <div class="card">
+          <div class="ctitle">썸네일 프롬프트</div>
+          <div class="hint" style="margin-bottom:8px">채널별로 자동 저장됩니다</div>
+          <textarea id="thumbPrompt" rows="8" placeholder="썸네일 생성 프롬프트를 입력하세요.
+예: YouTube thumbnail for economic news channel, dramatic stock market crash scene, red chart going down, worried businessman in subway, text overlay '한화솔루션 -19%', high contrast, eye-catching, 16:9 ratio" oninput="autoSave()"></textarea>
+          <label>추가 스타일/지시사항</label>
+          <input type="text" id="thumbStyle" placeholder="예: ultra detailed, vibrant colors, dramatic lighting" oninput="autoSave()">
+        </div>
+        <div class="card">
+          <div class="ctitle">마스코트 캐릭터 이미지 (최대 5장)</div>
+          <div class="hint" style="margin-bottom:6px">채널별 저장 — 생성 시 캐릭터 참조로 사용됩니다</div>
+          <div class="ref-list" id="mascotList">
+            <div class="ref-add" onclick="document.getElementById('mascotInput').click()">+</div>
+          </div>
+          <input type="file" id="mascotInput" accept="image/*" multiple style="display:none" onchange="addMascot(this)">
+        </div>
+        <div class="card">
+          <div class="ctitle">생성 설정</div>
+          <div class="g2">
+            <div><label>AI 모델</label>
+              <select id="thumbModel" onchange="autoSave()">
+                <option value="imagen3">Imagen 3</option>
+                <option value="imagen3fast">Imagen 3 Fast</option>
+              </select>
+            </div>
+            <div><label>생성 수량</label>
+              <select id="thumbCount" onchange="autoSave()">
+                <option value="1">1장</option><option value="2">2장</option><option value="3" selected>3장</option><option value="4">4장</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn bp" style="width:100%;margin-top:12px" onclick="genThumbs()">✦ 썸네일 생성</button>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="ctitle">생성된 썸네일</div>
+          <div class="tgrid" id="thumbGrid">
+            <div class="empty" style="padding:20px;grid-column:1/-1"><p>썸네일을 생성해보세요</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- YouTube -->
+<div id="page-youtube" class="page">
+  <div class="ph"><div><h2>YouTube 업로드</h2><p>렌더링 완료 영상을 YouTube에 자동 업로드합니다</p></div></div>
+  <div class="pb">
+    <div class="g2" style="gap:16px;align-items:start">
+      <div>
+        <div class="card">
+          <div class="ctitle">YouTube 계정 연결</div>
+          <div id="ytDis">
+            <div class="hint" style="margin-bottom:10px">YouTube Data API v3 OAuth 2.0으로 연결합니다.</div>
+            <button class="btn bred" style="width:100%" onclick="ytConnect()">▶ YouTube 계정 연결</button>
+          </div>
+          <div id="ytCon" style="display:none">
+            <div class="yt-card">
+              <span style="font-size:22px">▶</span>
+              <div style="flex:1"><div style="font-size:13px;font-weight:600" id="ytChNm">채널명</div><div style="font-size:11px;color:var(--text3)">연결됨</div></div>
+              <button class="btn bgh bsm" onclick="ytDiscon()">해제</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ctitle">YouTube API 키</div>
+          <div class="api-hd"><span class="api-lbl">Client ID</span><a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="api-lnk">Google Cloud Console ↗</a></div>
+          <input type="password" id="ytCid" placeholder="xxx.apps.googleusercontent.com" oninput="autoSave()">
+          <label>Client Secret</label>
+          <input type="password" id="ytCs" placeholder="GOCSPX-..." oninput="autoSave()">
+          <label>API Key (선택)</label>
+          <input type="password" id="ytAk" placeholder="AIza..." oninput="autoSave()">
+          <button class="btn bgh" style="margin-top:9px;width:100%" onclick="saveYtKeys()">저장</button>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="ctitle">업로드 설정</div>
+          <label>영상 제목</label>
+          <input type="text" id="ytTitle" placeholder="비우면 프로젝트 제목 사용" oninput="autoSave()">
+          <label>설명</label>
+          <textarea id="ytDesc" rows="4" oninput="autoSave()"></textarea>
+          <label>태그</label>
+          <input type="text" id="ytTags" placeholder="태그1, 태그2" oninput="autoSave()">
+          <div class="g2" style="margin-top:0">
+            <div><label>공개 설정</label>
+              <select id="ytPriv" onchange="autoSave()">
+                <option value="private">비공개</option><option value="unlisted">일부공개</option><option value="public">공개</option>
+              </select>
+            </div>
+            <div><label>카테고리</label>
+              <select id="ytCat" onchange="autoSave()">
+                <option value="22">People & Blogs</option><option value="28">Science & Tech</option>
+                <option value="25">News & Politics</option><option value="27">Education</option>
+                <option value="24">Entertainment</option>
+              </select>
+            </div>
+          </div>
+          <label>예약 업로드</label>
+          <input type="datetime-local" id="ytSched" oninput="autoSave()">
+        </div>
+        <div class="card">
+          <div class="ctitle">업로드 실행</div>
+          <label>영상 파일</label>
+          <input type="file" id="ytFile" accept="video/*" onchange="selYtFile(this)">
+          <div id="ytFileInfo" style="font-size:12px;color:var(--accent);margin-top:5px;display:none"></div>
+          <button class="btn bred" style="width:100%;margin-top:10px" onclick="startUpload()">▶ YouTube 업로드</button>
+          <div id="ytStat" style="display:none;margin-top:10px">
+            <div class="prog"><div class="prog-f" id="ytProg" style="width:0%"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:5px">
+              <span id="ytStatTxt" style="color:var(--text2)">대기중</span>
+              <span id="ytPct" style="color:var(--accent);font-weight:700">0%</span>
+            </div>
+            <div id="ytLinkRow" style="display:none;margin-top:6px">
+              <a id="ytLink" href="#" target="_blank" style="color:var(--accent);font-size:12px">YouTube에서 보기 →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 설정 -->
+<div id="page-settings" class="page">
+  <div class="ph"><div><h2>설정</h2><p>채널별 설정 — 변경 시 자동 저장</p></div></div>
+  <div class="pb">
+    <div class="g2" style="gap:15px;align-items:start">
+      <div>
+        <!-- 영상 비율 -->
+        <div class="card">
+          <div class="ctitle">영상 비율</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn bp" id="r169" onclick="setRatio('16:9',this)" style="flex:1">📺 16:9 유튜브</button>
+            <button class="btn bgh" id="r916" onclick="setRatio('9:16',this)" style="flex:1">📱 9:16 쇼츠</button>
+          </div>
+        </div>
+        <!-- 캐릭터 설정 -->
+        <div class="card">
+          <div class="ctitle">캐릭터 설정 (이미지 일관성)</div>
+          <div class="hint" style="margin-bottom:8px">최대 5개 캐릭터 등록 — 이미지 생성 시 캐릭터 정보가 프롬프트에 포함됩니다</div>
+          <div class="char-list" id="charList"></div>
+          <div class="char-add" id="charAdd" onclick="addChar()" style="margin-top:8px">
+            <span>+</span><span style="font-size:13px">캐릭터 추가</span>
+          </div>
+          <input type="file" id="charImgInput" accept="image/*" style="display:none" onchange="charImgUploaded(this)">
+        </div>
+        <!-- 스타일 참조 이미지 -->
+        <div class="card">
+          <div class="ctitle">스타일 참조 이미지</div>
+          <div class="hint" style="margin-bottom:6px">이미지 생성 시 이 스타일을 참조합니다 (최대 3장)</div>
+          <div class="ref-list" id="styleRefList">
+            <div class="ref-add" onclick="document.getElementById('styleRefInput').click()">+</div>
+          </div>
+          <input type="file" id="styleRefInput" accept="image/*" multiple style="display:none" onchange="addStyleRef(this)">
+        </div>
+        <!-- TTS -->
+        <div class="card">
+          <div class="ctitle">TTS 음성 설정</div>
+          <label>음성 엔진</label>
+          <select id="ttsEng" onchange="changeTtsEng();autoSave()">
+            <option value="elevenlabs">ElevenLabs (고품질)</option>
+            <option value="gemini">Gemini TTS</option>
+            <option value="naver">네이버 클로바</option>
+            <option value="browser">브라우저 내장 (무료)</option>
+          </select>
+          <label>언어 필터</label>
+          <div class="vf" id="voiceFilter"></div>
+          <div class="hint" id="vcHint" style="margin-bottom:5px"></div>
+          <div class="vlist" id="voiceList"></div>
+          <label style="margin-top:11px">말하기 속도</label>
+          <div class="sr"><input type="range" min="0.5" max="2.0" step="0.05" value="1.0" id="ttsSpd" oninput="document.getElementById('ttsSpdV').textContent=parseFloat(this.value).toFixed(2)+'x';autoSave()"><span class="sv" id="ttsSpdV">1.00x</span></div>
+        </div>
+      </div>
+      <div>
+        <!-- 자막 -->
+        <div class="card">
+          <div class="ctitle">자막 설정</div>
+          <label>폰트</label>
+          <select id="subFont" onchange="updateSubPrev();autoSave()">
+            <option value="'Noto Sans KR', sans-serif">Noto Sans KR</option>
+            <option value="'Pretendard', sans-serif">Pretendard</option>
+            <option value="'Gothic A1', sans-serif">Gothic A1</option>
+            <option value="'Black Han Sans', sans-serif">Black Han Sans</option>
+            <option value="'Nanum Gothic', sans-serif">Nanum Gothic</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Courier New', monospace">Courier New</option>
+          </select>
+          <label>크기: <span id="subSzV">25</span>px</label>
+          <input type="range" min="12" max="60" value="25" id="subSz" oninput="document.getElementById('subSzV').textContent=this.value;updateSubPrev();autoSave()">
+          <label>화면당 글자수: <span id="subChV">20</span>자</label>
+          <input type="range" min="5" max="60" value="20" id="subCh" oninput="document.getElementById('subChV').textContent=this.value;autoSave()">
+          <label>위치</label>
+          <select id="subPos" onchange="updateSubPrev();autoSave()">
+            <option value="bottom">하단</option><option value="center">중앙</option><option value="top">상단</option>
+          </select>
+          <div class="g2" style="margin-top:0">
+            <div><label>글자 색</label><input type="color" id="subTc" value="#FFFFFF" oninput="updateSubPrev();autoSave()"></div>
+            <div><label>배경 색</label><input type="color" id="subBc" value="#000000" oninput="updateSubPrev();autoSave()"></div>
+          </div>
+          <label>배경 투명도: <span id="subOpV">80</span>%</label>
+          <input type="range" min="0" max="100" value="80" id="subOp" oninput="document.getElementById('subOpV').textContent=this.value;updateSubPrev();autoSave()">
+          <div style="display:flex;gap:14px;margin-top:8px">
+            <label style="display:flex;align-items:center;gap:5px;margin:0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text)"><input type="checkbox" id="subBrd" onchange="updateSubPrev();autoSave()"> 테두리</label>
+            <label style="display:flex;align-items:center;gap:5px;margin:0;text-transform:none;letter-spacing:0;font-size:13px;color:var(--text)"><input type="checkbox" id="subShd" checked onchange="updateSubPrev();autoSave()"> 그림자</label>
+          </div>
+          <label>미리보기</label>
+          <div class="sub-pw"><div class="sub-pbg"></div><div id="subPrev">자막 미리보기 텍스트입니다. 이렇게</div></div>
+          <button class="btn bgh bsm" style="margin-top:7px" onclick="alert('전체 장면에 자막 설정이 적용됩니다.')">전체 장면에 적용</button>
+        </div>
+        <!-- 추가 옵션 -->
+        <div class="card">
+          <div class="ctitle">추가 옵션</div>
+          <div class="trow">
+            <div class="tinfo"><div class="tl">자막 페이드 효과</div><div class="td">전환 시 페이드 인/아웃</div></div>
+            <label class="tog"><input type="checkbox" id="subFade" onchange="autoSave()"><span class="ts"></span></label>
+          </div>
+          <div class="trow">
+            <div class="tinfo"><div class="tl">🎵 BGM 배경음악</div><div class="td">TTS와 함께 재생</div></div>
+            <label class="tog"><input type="checkbox" id="useBgm" onchange="toggleBgm();autoSave()"><span class="ts"></span></label>
+          </div>
+          <div id="bgmWrap" style="display:none;margin-top:7px">
+            <input type="file" accept="audio/*" id="bgmFile">
+            <div class="hint">-15dB 자동 믹싱</div>
+          </div>
+          <div class="trow" style="border:none">
+            <div class="tinfo"><div class="tl">장면 전환 시간</div></div>
+            <span style="font-size:12px;font-weight:700;color:var(--accent)" id="transV">1초</span>
+          </div>
+          <input type="range" min="0" max="3" step="0.5" value="1" id="transT" oninput="document.getElementById('transV').textContent=this.value+'초';autoSave()">
+        </div>
+        <!-- API 키 -->
+        <div class="card">
+          <div class="ctitle">🔑 API 키 설정</div>
+          <div style="background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.18);border-radius:7px;padding:8px 10px;font-size:11px;color:var(--accent);margin-bottom:10px">브라우저 로컬 스토리지 저장 — 서버 미전송</div>
+          <div class="api-hd"><span class="api-lbl">Gemini API Key</span><a href="https://aistudio.google.com" target="_blank" class="api-lnk">Google AI Studio ↗</a></div>
+          <div class="hint" style="margin-bottom:3px">이미지 생성(Imagen), Gemini TTS, AI 씬 분석</div>
+          <div class="api-row"><input type="password" id="gemKey" placeholder="AIza..." oninput="autoSave()"><button class="btn bgh bsm" onclick="testKey('gemini')">테스트</button></div>
+          <div class="api-hd"><span class="api-lbl">ElevenLabs API Key</span><a href="https://elevenlabs.io" target="_blank" class="api-lnk">ElevenLabs ↗</a></div>
+          <div class="api-row"><input type="password" id="elKey" placeholder="sk_..." oninput="autoSave()"><button class="btn bgh bsm" onclick="testKey('elevenlabs')">테스트</button></div>
+          <div class="api-hd"><span class="api-lbl">fal.ai API Key</span><a href="https://fal.ai" target="_blank" class="api-lnk">fal.ai ↗</a></div>
+          <div class="api-row"><input type="password" id="falKey" placeholder="fal_..." oninput="autoSave()"></div>
+          <div class="api-hd"><span class="api-lbl">Naver Cloud Client ID</span><a href="https://console.ncloud.com" target="_blank" class="api-lnk">Naver Cloud ↗</a></div>
+          <input type="password" id="navCid" placeholder="Client ID" oninput="autoSave()" style="margin-top:4px">
+          <label>Naver Cloud Client Secret</label>
+          <input type="password" id="navCs" placeholder="Client Secret" oninput="autoSave()">
+          <button class="btn bp" style="width:100%;margin-top:13px" onclick="saveKeys()">API 키 저장</button>
+          <div id="keySaveMsg" style="font-size:11px;color:var(--green);text-align:center;margin-top:5px;display:none">✓ 저장됨</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+</div><!-- end app -->
+
+<!-- 씬 편집 모달 -->
+<div class="overlay" id="sceneModal">
+  <div class="modal">
+    <div class="modal-ttl"><span id="sceneModalTtl">장면 편집</span><button class="modal-cl" onclick="closeModal('sceneModal')">✕</button></div>
+    <label>나레이션</label><textarea id="mNarr" rows="4"></textarea>
+    <label>이미지 프롬프트 (영어)</label><textarea id="mImg" rows="3"></textarea>
+    <label>영상 프롬프트 (영어, 선택)</label><textarea id="mVid" rows="2"></textarea>
+    <label>장면 전환</label>
+    <select id="mTrans"><option value="cut">Cut</option><option value="fade">Fade</option><option value="dissolve">Dissolve</option></select>
+    <label>영상 효과</label>
+    <div class="fx-grid" id="mFxGrid"></div>
+    <div class="brow">
+      <button class="btn bp" onclick="saveSceneEdit()">저장</button>
+      <button class="btn bgh" onclick="closeModal('sceneModal')">취소</button>
+    </div>
+  </div>
+</div>
+
+<script src="studio.js"></script>
+</body>
+</html>
