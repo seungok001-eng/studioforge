@@ -1373,7 +1373,7 @@ async function startUpload(){
 
 // ── API 호출 ───────────────────────────────────────
 async function callGemini(key,prompt){
-  var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
+  var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+key,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});
   var d=await r.json();if(!r.ok)throw new Error((d.error&&d.error.message)||'Gemini 오류');
   return d.candidates[0].content.parts[0].text;
 }
