@@ -623,22 +623,76 @@ function splitScenes(){
 }
 
 async function analyzeAI(){
-  var scriptEl=el('scriptIn'),script=scriptEl?scriptEl.value.trim():'';
-  if(!script){alert('대본을 입력하세요.');return;}
+  // 이미 분할된 씬이 있으면 그걸 기준으로 프롬프트만 생성
+  // 없으면 대본을 기준으로 분할+프롬프트 동시 생성
+  var hasScenes = P.scenes && P.scenes.length > 0;
+  if(!hasScenes){
+    var scriptEl=el('scriptIn'), script=scriptEl?scriptEl.value.trim():'';
+    if(!script){alert('대본을 입력하거나 먼저 장면 분할을 실행하세요.');return;}
+  }
   var eng=(el('imgEngine')||{}).value||ST.settings.imgEngine||'gemini';
-  var style=ST.settings.globalStyle||'',gp2=ST.settings.globalPrompt||'';
+  var style=ST.settings.globalStyle||'', gp2=ST.settings.globalPrompt||'';
   var chars=(ST.settings.characters||[]).filter(function(c){return c.name||c.desc;}).map(function(c){return c.name+': '+c.desc;}).join(', ');
   el('sbLogWrap').style.display='block';
-  sbLog('AI 씬 분석 중 ('+(eng.startsWith('grok')?'Grok':'Gemini')+')...','info');
-  try{
-    var prompt='다음 스크립트를 씬별로 분석하고 JSON만 응답하세요(마크다운 없이):\n[{"id":0,"title":"제목","narration":"내레이션","imagePrompt":"영어 이미지 프롬프트'+(style?', '+style:'')+(gp2?', '+gp2:'')+(chars?', featuring '+chars:'')+'","videoPrompt":"영상 프롬프트","transition":"cut","fx":"none"}]\n\n스크립트:\n'+script;
-    var raw=await callAI(prompt);
-    raw=raw.replace(/```json|```/g,'').trim();
-    var parsed=JSON.parse(raw);
-    idbClearProject(P.id);
-    P.scenes=parsed.map(function(s,i){return Object.assign({},s,{id:i,status:'pending',imgBlob:null,audioBlob:null,videoBlob:null,checked:false});});
-    autoSave();renderSB();sbLog('AI 분석 완료: '+P.scenes.length+'개 씬','ok');gp('storyboard');
-  }catch(e){sbLog('AI 분석 실패: '+e.message,'err');alert('오류: '+e.message);}
+
+  if(hasScenes){
+    // ── 모드 A: 기존 씬 유지, 각 씬에 이미지/영상 프롬프트만 생성 ──
+    sbLog('기존 '+P.scenes.length+'개 씬에 이미지 프롬프트 생성 중...','info');
+    showProgBar('AI 프롬프트 생성 중...');
+    var styleNote = style ? ', '+style : '';
+    var gpNote    = gp2   ? ', '+gp2   : '';
+    var charNote  = chars ? ', featuring '+chars : '';
+
+    for(var i=0; i<P.scenes.length; i++){
+      if(stopFlag) break;
+      setProgBar((i/P.scenes.length)*100, 'AI 프롬프트 생성 중... '+(i+1)+'/'+P.scenes.length);
+      try{
+        var singlePrompt =
+          '다음 나레이션에 딱 맞는 이미지 프롬프트와 영상 프롬프트를 영어로 생성하세요.\n'
+          +'JSON만 응답(마크다운 없이): {"imagePrompt":"...'+styleNote+gpNote+charNote+'","videoPrompt":"...","fx":"none","transition":"cut"}\n\n'
+          +'나레이션: '+P.scenes[i].narration;
+        var raw = await callAI(singlePrompt);
+        raw = raw.replace(/```json|```/g,'').trim();
+        // JSON 파싱 실패 대비
+        try{
+          var parsed = JSON.parse(raw);
+          P.scenes[i].imagePrompt = parsed.imagePrompt || P.scenes[i].imagePrompt;
+          P.scenes[i].videoPrompt = parsed.videoPrompt || P.scenes[i].videoPrompt;
+          if(parsed.fx && parsed.fx !== 'none') P.scenes[i].fx = parsed.fx;
+          if(parsed.transition) P.scenes[i].transition = parsed.transition;
+        }catch(pe){
+          // JSON 파싱 실패 시 텍스트 전체를 imagePrompt로 사용
+          P.scenes[i].imagePrompt = raw.substring(0,300);
+        }
+        sbLog('장면 '+(i+1)+' 프롬프트 ✓','ok');
+      }catch(e){
+        sbLog('장면 '+(i+1)+' 프롬프트 오류: '+e.message,'err');
+      }
+      await sleep(300);
+    }
+    hideProgBar();
+    autoSave(); renderSB();
+    sbLog('AI 프롬프트 생성 완료 ('+P.scenes.length+'개 씬 유지)','ok');
+    notifyDone('프롬프트 생성 완료!');
+
+  } else {
+    // ── 모드 B: 씬 없을 때만 대본 전체 분석해서 분할+프롬프트 동시 생성 ──
+    sbLog('AI 씬 분석+분할 중 ('+(eng.startsWith('grok')?'Grok':'Gemini')+')...','info');
+    var script=(el('scriptIn')||{}).value||'';
+    try{
+      var prompt='다음 스크립트를 씬별로 분석하고 JSON만 응답하세요(마크다운 없이):\n'
+        +'[{"id":0,"title":"제목","narration":"내레이션","imagePrompt":"영어 이미지 프롬프트'+(style?', '+style:'')+(gp2?', '+gp2:'')+(chars?', featuring '+chars:'')+'","videoPrompt":"영상 프롬프트","transition":"cut","fx":"none"}]\n\n'
+        +'스크립트:\n'+script;
+      var raw=await callAI(prompt);
+      raw=raw.replace(/```json|```/g,'').trim();
+      var parsed=JSON.parse(raw);
+      idbClearProject(P.id);
+      P.scenes=parsed.map(function(s,i){return Object.assign({},s,{id:i,status:'pending',imgBlob:null,audioBlob:null,videoBlob:null,checked:false});});
+      autoSave(); renderSB();
+      sbLog('AI 분석 완료: '+P.scenes.length+'개 씬','ok');
+      gp('storyboard');
+    }catch(e){sbLog('AI 분석 실패: '+e.message,'err');alert('오류: '+e.message);}
+  }
 }
 
 // ── 스토리보드 ─────────────────────────────────────
@@ -1505,4 +1559,40 @@ function updateFlowBar(){
   var fBar=el('flowModeBar'),gBar=el('grokModeBar');
   if(fBar)fBar.style.display=isFlow?'flex':'none';
   if(gBar)gBar.style.display=isGrokFlow?'flex':'none';
+}
+
+// ── StudioForge Automator 확장프로그램 연동 ────────
+// 확장프로그램에서 생성된 이미지 URL을 받아서 씬에 적용
+if (typeof window !== 'undefined') {
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.action === 'SF_IMAGE_DONE') {
+      applyExtensionImage(e.data.sceneIdx, e.data.imageUrl);
+    }
+  });
+
+  // chrome.runtime 메시지도 수신 (확장프로그램 content script 경유)
+  if (window.__sfListenerAdded !== true) {
+    window.__sfListenerAdded = true;
+    document.addEventListener('SF_IMAGE_DONE', function(e) {
+      if (e.detail) applyExtensionImage(e.detail.sceneIdx, e.detail.imageUrl);
+    });
+  }
+}
+
+async function applyExtensionImage(sceneIdx, imageUrl) {
+  if (!P.scenes || !P.scenes[sceneIdx]) return;
+  try {
+    // imageUrl을 fetch해서 Blob으로 변환
+    var r = await fetch(imageUrl);
+    var blob = await r.blob();
+    P.scenes[sceneIdx].imgBlob = blob;
+    P.scenes[sceneIdx].hasImg  = true;
+    P.scenes[sceneIdx].status  = 'done';
+    await saveBlob(P.id + '_img_' + sceneIdx, blob);
+    autoSave();
+    renderSB();
+    sbLog('확장프로그램 이미지 적용 완료: 장면 ' + (sceneIdx+1), 'ok');
+  } catch(e) {
+    sbLog('이미지 적용 오류: ' + e.message, 'err');
+  }
 }
