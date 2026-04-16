@@ -1574,24 +1574,36 @@ if (typeof window !== 'undefined') {
   if (window.__sfListenerAdded !== true) {
     window.__sfListenerAdded = true;
     document.addEventListener('SF_IMAGE_DONE', function(e) {
-      if (e.detail) applyExtensionImage(e.detail.sceneIdx, e.detail.imageUrl);
+      if (e.detail) applyExtensionImage(e.detail.sceneIdx, e.detail.imageUrl, e.detail.base64);
     });
   }
 }
 
-async function applyExtensionImage(sceneIdx, imageUrl) {
+async function applyExtensionImage(sceneIdx, imageUrl, base64) {
   if (!P.scenes || !P.scenes[sceneIdx]) return;
   try {
-    // imageUrl을 fetch해서 Blob으로 변환
-    var r = await fetch(imageUrl);
-    var blob = await r.blob();
+    var blob;
+    if (base64) {
+      // base64 직접 변환 (CORS 없음)
+      var arr = base64.split(',');
+      var mime = arr[0].match(/:(.*?);/)[1];
+      var bstr = atob(arr[1]);
+      var n = bstr.length;
+      var u8arr = new Uint8Array(n);
+      while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+      blob = new Blob([u8arr], { type: mime });
+    } else {
+      // fallback: fetch 시도
+      var r = await fetch(imageUrl);
+      blob = await r.blob();
+    }
     P.scenes[sceneIdx].imgBlob = blob;
     P.scenes[sceneIdx].hasImg  = true;
     P.scenes[sceneIdx].status  = 'done';
     await saveBlob(P.id + '_img_' + sceneIdx, blob);
     autoSave();
     renderSB();
-    sbLog('확장프로그램 이미지 적용 완료: 장면 ' + (sceneIdx+1), 'ok');
+    sbLog('이미지 적용 완료: 장면 ' + (sceneIdx+1), 'ok');
   } catch(e) {
     sbLog('이미지 적용 오류: ' + e.message, 'err');
   }
