@@ -698,8 +698,24 @@ input[type=password]{font-family:monospace}
             <option value="naver">네이버 클로바 (로컬 서버 필요)</option>
             <option value="browser">브라우저 내장 (무료)</option>
           </select>
+          <!-- 현재 선택된 목소리 표시 -->
+          <div id="curVoiceBar" style="display:none;margin:7px 0;padding:6px 10px;background:rgba(0,212,255,.07);border:1px solid var(--accent);border-radius:7px;font-size:11px;color:var(--accent)">
+            🎙 선택됨: <span id="curVoiceName" style="font-weight:700">-</span>
+            <span id="curVoiceGender" style="margin-left:5px;opacity:.7"></span>
+          </div>
+          <!-- 검색창 -->
+          <div style="position:relative;margin-bottom:6px">
+            <input type="text" id="voiceSearch" placeholder="🔍 목소리 이름 검색..." oninput="filterVoiceSearch()" style="width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:var(--bg3);color:var(--text);font-size:12px;outline:none">
+          </div>
+          <!-- 언어 필터 -->
           <label>언어 필터</label>
           <div class="vf" id="voiceFilter"></div>
+          <!-- ElevenLabs 티어 필터 -->
+          <div id="tierFilter" style="display:none;margin:5px 0;display:flex;gap:5px;flex-wrap:wrap">
+            <button class="vfb on" id="tier-ALL" onclick="setTierF('ALL',this)">전체</button>
+            <button class="vfb" id="tier-free" onclick="setTierF('free',this)">💚 Free</button>
+            <button class="vfb" id="tier-creator" onclick="setTierF('creator',this)">⭐ Creator</button>
+          </div>
           <div class="hint" id="vcHint" style="margin-bottom:5px"></div>
           <div class="vlist" id="voiceList"></div>
           <label style="margin-top:11px">말하기 속도</label>
