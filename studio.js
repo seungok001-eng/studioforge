@@ -37,27 +37,56 @@ var FX_POOL=['zoomin','zoomout','panl','panr','panu','pand','zleft','zright'];
 // ── 음성 데이터 ────────────────────────────────────
 var VOICES={
   elevenlabs:[
-    {id:'eun-woo',name:'Eun Woo',desc:'Calm, Steady',region:'KR',gender:'남'},
-    {id:'mi-rae',name:'Mi-rae',desc:'Bright, Energetic',region:'KR',gender:'여'},
-    {id:'ji-ho',name:'Ji-ho',desc:'Warm, Professional',region:'KR',gender:'남'},
-    {id:'soo-yeon',name:'Soo-yeon',desc:'Soft, Natural',region:'KR',gender:'여'},
-    {id:'21m00Tcm4TlvDq8ikWAM',name:'Rachel',desc:'Calm',region:'US',gender:'여'},
-    {id:'EXAVITQu4vr4xnSDxMaL',name:'Bella',desc:'Soft',region:'US',gender:'여'},
-    {id:'ErXwobaYiN019PkySvjV',name:'Antoni',desc:'Well-rounded',region:'US',gender:'남'},
-    {id:'TxGEqnHWrfWFTfGW9XjX',name:'Josh',desc:'Deep',region:'US',gender:'남'},
-    {id:'VR6AewLTigWG4xSOukaG',name:'Arnold',desc:'Crisp',region:'US',gender:'남'},
-    {id:'pNInz6obpgDQGcFmaJgB',name:'Adam',desc:'Narrative',region:'US',gender:'남'},
-    {id:'ZQe5CZNOzWyzPSCn5a3c',name:'Glinda',desc:'Warm',region:'UK',gender:'여'},
-    {id:'g5CIjZEefAph4nQFvHAz',name:'Freya',desc:'Energetic',region:'UK',gender:'여'},
-    {id:'hana-jp',name:'Hana',desc:'Soft',region:'JP',gender:'여'},
-    {id:'kenji-jp',name:'Kenji',desc:'Professional',region:'JP',gender:'남'},
-    {id:'mei-cn',name:'Mei',desc:'Clear',region:'CN',gender:'여'},
-    {id:'pedro-es',name:'Pedro',desc:'Natural',region:'ES',gender:'남'},
-    {id:'pierre-fr',name:'Pierre',desc:'Smooth',region:'FR',gender:'남'},
-    {id:'hans-de',name:'Hans',desc:'Strong',region:'DE',gender:'남'},
-    {id:'joao-pt',name:'João',desc:'Warm',region:'BR',gender:'남'},
-    {id:'marco-it',name:'Marco',desc:'Rich',region:'IT',gender:'남'},
-    {id:'ali-ar',name:'Ali',desc:'Deep',region:'AR',gender:'남'},
+    // ── 한국어 (KR) ──────────────────────────────────
+    // Free tier
+    {id:'21m00Tcm4TlvDq8ikWAM',name:'Rachel',desc:'Calm, Professional',region:'KR',gender:'여',tier:'free'},
+    // Creator tier - Korean
+    {id:'XB0fDUnXU5powFXDhCwa',name:'Charlotte',desc:'Seductive, Warm',region:'KR',gender:'여',tier:'creator'},
+    {id:'IKne3meq5aSn9XLyUdCD',name:'Charlie',desc:'Conversational',region:'KR',gender:'남',tier:'creator'},
+    {id:'onwK4e9ZLuTAKqWW03F9',name:'Daniel',desc:'Deep, Authoritative',region:'KR',gender:'남',tier:'creator'},
+    {id:'N2lVS1w4EtoT3dr4eOWO',name:'Callum',desc:'Intense',region:'KR',gender:'남',tier:'creator'},
+    {id:'g5CIjZEefAph4nQFvHAz',name:'Freya',desc:'Energetic',region:'KR',gender:'여',tier:'creator'},
+    {id:'jBpfuIE2acCO8z3wKNLl',name:'Gigi',desc:'Childlike, Playful',region:'KR',gender:'여',tier:'creator'},
+    {id:'CYw3kZ02Hs0563khs1Fj',name:'Dave',desc:'Conversational, UK',region:'KR',gender:'남',tier:'creator'},
+    {id:'LcfcDJNUP1GQjkzn1xUU',name:'Emily',desc:'Calm, Composed',region:'KR',gender:'여',tier:'creator'},
+    {id:'TX3LPaxmHKxFdv7VOFE1',name:'Liam',desc:'Articulate, Young',region:'KR',gender:'남',tier:'creator'},
+    {id:'pFZP5JQG7iQjIQuC4Bku',name:'Lily',desc:'Warm, Narration',region:'KR',gender:'여',tier:'creator'},
+    {id:'t0jbNlBVZ17f02VDIeMI',name:'Jessie',desc:'Raspy, Low',region:'KR',gender:'남',tier:'creator'},
+    {id:'GBv7mTt0atIp3Br8iCZE',name:'Thomas',desc:'Calm, Meditation',region:'KR',gender:'남',tier:'creator'},
+    {id:'bVMeCyTHy58xNoL34h3p',name:'Jeremy',desc:'Excited, Young',region:'KR',gender:'남',tier:'creator'},
+    {id:'flq6f7yk4E4fJM5XTYuZ',name:'Michael',desc:'Old, Audiobook',region:'KR',gender:'남',tier:'creator'},
+    {id:'MF3mGyEYCl7XYWbV9V6O',name:'Elli',desc:'Young, Bubbly',region:'KR',gender:'여',tier:'creator'},
+    {id:'AZnzlk1XvdvUeBnXmlld',name:'Domi',desc:'Strong, Confident',region:'KR',gender:'여',tier:'creator'},
+    {id:'oWAxZDx7w5VEj9dCyTzz',name:'Grace',desc:'Southern US',region:'KR',gender:'여',tier:'creator'},
+    {id:'z9fAnlkpzviPz146aGWa',name:'Glinda',desc:'Warm, Witch',region:'KR',gender:'여',tier:'creator'},
+    {id:'zrHiDhphv9ZnVXBqCLjz',name:'Mimi',desc:'Childlike, Anime',region:'KR',gender:'여',tier:'creator'},
+    // ── 영어 US (US) ─────────────────────────────────
+    {id:'EXAVITQu4vr4xnSDxMaL',name:'Bella',desc:'Soft, Calm',region:'US',gender:'여',tier:'free'},
+    {id:'ErXwobaYiN019PkySvjV',name:'Antoni',desc:'Well-rounded',region:'US',gender:'남',tier:'free'},
+    {id:'TxGEqnHWrfWFTfGW9XjX',name:'Josh',desc:'Deep, Young',region:'US',gender:'남',tier:'free'},
+    {id:'VR6AewLTigWG4xSOukaG',name:'Arnold',desc:'Crisp, Strong',region:'US',gender:'남',tier:'free'},
+    {id:'pNInz6obpgDQGcFmaJgB',name:'Adam',desc:'Narrative, Deep',region:'US',gender:'남',tier:'free'},
+    {id:'yoZ06aMxZJJ28mfd3POQ',name:'Sam',desc:'Raspy, Young',region:'US',gender:'남',tier:'creator'},
+    {id:'pMsXgVXv3BLzUgSXRplE',name:'Serena',desc:'Pleasant, Middle-aged',region:'US',gender:'여',tier:'creator'},
+    {id:'ODq5zmih8GrVes37Dizd',name:'Patrick',desc:'Shouty, Characters',region:'US',gender:'남',tier:'creator'},
+    {id:'ZF6FPAbjXT4488VcRRnw',name:'Dorothy',desc:'Pleasant, Children',region:'US',gender:'여',tier:'creator'},
+    {id:'SOYHLrjzK2X1ezoPC6cr',name:'Harry',desc:'Anxious, Young',region:'US',gender:'남',tier:'creator'},
+    {id:'wViXBPUzp2ZZixB1xQuM',name:'Matilda',desc:'Warm, Young',region:'US',gender:'여',tier:'creator'},
+    // ── 영어 UK (UK) ─────────────────────────────────
+    {id:'ZQe5CZNOzWyzPSCn5a3c',name:'Glinda',desc:'Warm, Witch',region:'UK',gender:'여',tier:'creator'},
+    {id:'XrExE9yKIg1WjnnlVkGX',name:'Matilda',desc:'Warm, Approachable',region:'UK',gender:'여',tier:'creator'},
+    {id:'2EiwWnXFnvU5JabPnv8n',name:'Clyde',desc:'War Veteran',region:'UK',gender:'남',tier:'creator'},
+    {id:'D38z5RcWu1voky8WS1ja',name:'Fin',desc:'Sailor, Calm',region:'UK',gender:'남',tier:'creator'},
+    {id:'ThT5KcBeYPX3keUQqHPh',name:'Dorothy',desc:'Pleasant, Storytelling',region:'UK',gender:'여',tier:'creator'},
+    // ── 일본어 (JP) ───────────────────────────────────
+    {id:'TxGEqnHWrfWFTfGW9XjX',name:'Hana (JP)',desc:'Soft, Natural',region:'JP',gender:'여',tier:'creator'},
+    {id:'VR6AewLTigWG4xSOukaG',name:'Kenji (JP)',desc:'Professional',region:'JP',gender:'남',tier:'creator'},
+    // ── 기타 언어 ─────────────────────────────────────
+    {id:'pedro-es',name:'Pedro',desc:'Natural, Spanish',region:'ES',gender:'남',tier:'creator'},
+    {id:'pierre-fr',name:'Pierre',desc:'Smooth, French',region:'FR',gender:'남',tier:'creator'},
+    {id:'hans-de',name:'Hans',desc:'Strong, German',region:'DE',gender:'남',tier:'creator'},
+    {id:'joao-pt',name:'João',desc:'Warm, Portuguese',region:'BR',gender:'남',tier:'creator'},
+    {id:'marco-it',name:'Marco',desc:'Rich, Italian',region:'IT',gender:'남',tier:'creator'},
   ],
   gemini:[
     {id:'Aoede',name:'Aoede',desc:'Bright',region:'ALL',gender:'여'},
@@ -733,6 +762,7 @@ function renderSB(){
         +'<div class="sc-acts" style="margin-top:5px">'
         +'<button class="ib" onclick="genImg1('+i+')" title="이미지 재생성">🖼</button>'
         +'<button class="ib" onclick="genTts1('+i+')" title="TTS 재생성">🔊</button>'
+        +(s.audioBlob?'<button class="ib" onclick="playScTts('+i+')" title="TTS 미리듣기" style="color:var(--green)">▶</button>':'')
         +'<button class="ib" onclick="genVid1('+i+')" title="영상 생성">🎬</button>'
         +'<button class="ib" onclick="dlScImg('+i+')" title="이미지 다운"'+(s.imgBlob?'':' disabled')+'>↓🖼</button>'
         +'<button class="ib" onclick="dlScTts('+i+')" title="TTS 다운"'+(s.audioBlob?'':' disabled')+'>↓🔊</button>'
@@ -976,6 +1006,14 @@ async function genSelTts(){
 // ── 다운로드 ───────────────────────────────────────
 function dlScImg(i){if(!P.scenes[i]?.imgBlob)return;var a=document.createElement('a');a.href=URL.createObjectURL(P.scenes[i].imgBlob);a.download='scene_'+String(i+1).padStart(3,'0')+'.png';a.click();}
 function dlScTts(i){if(!P.scenes[i]?.audioBlob)return;var ext=P.scenes[i].audioBlob.type.includes('mp3')?'mp3':'wav';var a=document.createElement('a');a.href=URL.createObjectURL(P.scenes[i].audioBlob);a.download='tts_'+String(i+1).padStart(3,'0')+'.'+ext;a.click();}
+var _scTtsAudio=null;
+function playScTts(i){
+  if(!P.scenes[i]||!P.scenes[i].audioBlob){sbLog('장면 '+(i+1)+' TTS가 없습니다.','warn');return;}
+  if(_scTtsAudio){_scTtsAudio.pause();_scTtsAudio.src='';_scTtsAudio=null;}
+  _scTtsAudio=new Audio(URL.createObjectURL(P.scenes[i].audioBlob));
+  _scTtsAudio.play().catch(function(e){sbLog('재생 오류: '+e.message,'err');});
+  sbLog('장면 '+(i+1)+' TTS 재생 중...','info');
+}
 function dlScVid(i){if(!P.scenes[i]?.videoBlob)return;var a=document.createElement('a');a.href=URL.createObjectURL(P.scenes[i].videoBlob);a.download='video_'+String(i+1).padStart(3,'0')+'.mp4';a.click();}
 function dlSelImg(){var n=0;P.scenes.forEach(function(s,i){if(s.checked&&s.imgBlob){setTimeout(function(){dlScImg(i);},n++*200);}});if(!n)alert('이미지가 있는 장면을 체크하세요.');}
 function dlSelTts(){var n=0;P.scenes.forEach(function(s,i){if(s.checked&&s.audioBlob){setTimeout(function(){dlScTts(i);},n++*250);}});if(!n)alert('TTS가 있는 장면을 체크하세요.');}
@@ -1319,24 +1357,142 @@ function stopBgm(){
 }
 
 // ── 음성 목록 ──────────────────────────────────────
+var curTierF = 'ALL';
+var curVoiceSearch = '';
+
 function changeTtsEng(){
-  var eng=(el('ttsEng')||{}).value||'elevenlabs';curLangF='ALL';
+  var eng=(el('ttsEng')||{}).value||'elevenlabs';
+  curLangF='ALL'; curTierF='ALL'; curVoiceSearch='';
+  var sv=el('voiceSearch');if(sv)sv.value='';
+
+  // 언어 필터
   var filters=LANG_FILTERS[eng]||[{k:'ALL',l:'전체'}];
-  var fwrap=el('voiceFilter');if(!fwrap)return;
-  fwrap.innerHTML=filters.map(function(f){return '<button class="vfb'+(f.k===curLangF?' on':'')+'" onclick="setLF(\''+f.k+'\',this,\''+eng+'\')">'+f.l+'</button>';}).join('');
+  var fwrap=el('voiceFilter');
+  if(fwrap)fwrap.innerHTML=filters.map(function(f){
+    return '<button class="vfb'+(f.k===curLangF?' on':'')+'" onclick="setLF(\''+f.k+'\',this,\''+eng+'\')">'+f.l+'</button>';
+  }).join('');
+
+  // 티어 필터 (ElevenLabs만)
+  var tf=el('tierFilter');
+  if(tf)tf.style.display=(eng==='elevenlabs')?'flex':'none';
+
   renderVoices(eng,'ALL');
 }
-function setLF(k,btn,eng){curLangF=k;document.querySelectorAll('.vfb').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');renderVoices(eng||(el('ttsEng')||{}).value||'elevenlabs',k);}
+
+function setLF(k,btn,eng){
+  curLangF=k;
+  document.querySelectorAll('.vfb:not([id^="tier-"])').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderVoices(eng||(el('ttsEng')||{}).value||'elevenlabs',k);
+}
+
+function setTierF(k,btn){
+  curTierF=k;
+  document.querySelectorAll('[id^="tier-"]').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  renderVoices((el('ttsEng')||{}).value||'elevenlabs',curLangF);
+}
+
+function filterVoiceSearch(){
+  curVoiceSearch=(el('voiceSearch')||{}).value||'';
+  renderVoices((el('ttsEng')||{}).value||'elevenlabs',curLangF);
+}
+
 function renderVoices(eng,langF){
   var list=VOICES[eng]||[];
-  var filtered=langF==='ALL'?list:list.filter(function(v){return v.region===langF;});
+  var filtered=list;
+
+  // 언어 필터
+  if(langF&&langF!=='ALL') filtered=filtered.filter(function(v){return v.region===langF;});
+
+  // 티어 필터 (ElevenLabs)
+  if(eng==='elevenlabs'&&curTierF&&curTierF!=='ALL'){
+    filtered=filtered.filter(function(v){return v.tier===curTierF;});
+  }
+
+  // 검색 필터
+  if(curVoiceSearch.trim()){
+    var q=curVoiceSearch.trim().toLowerCase();
+    filtered=filtered.filter(function(v){
+      return v.name.toLowerCase().includes(q)||v.desc.toLowerCase().includes(q);
+    });
+  }
+
   var hint=el('vcHint');if(hint)hint.textContent=filtered.length+'개 음성';
   var e=el('voiceList');if(!e)return;
-  if(!filtered.length){e.innerHTML='<div style="font-size:12px;color:var(--text3);padding:7px">음성 없음</div>';return;}
-  e.innerHTML=filtered.map(function(v){return '<div class="vi'+(selVoice===v.id?' sel':'')+'" onclick="selV(\''+v.id+'\',this)"><div style="flex:1"><div class="vi-nm">'+v.name+'</div><div class="vi-ds">'+v.desc+'</div></div><div style="display:flex;gap:3px;flex-shrink:0"><span class="badge bc" style="font-size:9px">'+v.region+'</span><span class="badge bvc" style="font-size:9px">'+v.gender+'</span></div><button class="vi-pv" onclick="event.stopPropagation();testVoice()">▶</button></div>';}).join('');
+  if(!filtered.length){e.innerHTML='<div style="font-size:12px;color:var(--text3);padding:7px">검색 결과 없음</div>';return;}
+
+  e.innerHTML=filtered.map(function(v){
+    var tierBadge=v.tier?'<span class="badge" style="font-size:9px;background:'+(v.tier==='free'?'rgba(16,185,129,.15)':'rgba(245,158,11,.15)')+';color:'+(v.tier==='free'?'var(--green)':'var(--accent3)')+'">'+(v.tier==='free'?'Free':'Creator')+'</span>':'';
+    var genderIcon=v.gender==='여'?'👩':'👨';
+    return '<div class="vi'+(selVoice===v.id?' sel':'')+'" data-vid="'+v.id+'" onclick="selV(\''+v.id+'\',this,\''+esc(v.name)+'\',\''+v.gender+'\')">'
+      +'<div style="flex:1"><div class="vi-nm">'+genderIcon+' '+v.name+'</div><div class="vi-ds">'+v.desc+'</div></div>'
+      +'<div style="display:flex;gap:3px;flex-shrink:0;align-items:center">'
+      +tierBadge
+      +'<span class="badge bc" style="font-size:9px">'+v.region+'</span>'
+      +'</div>'
+      +'<button class="vi-pv" onclick="event.stopPropagation();testVoice(\''+v.id+'\',\''+esc(v.name)+'\')">▶</button>'
+      +'</div>';
+  }).join('');
 }
-function selV(id,btn){selVoice=id;document.querySelectorAll('.vi').forEach(function(v){v.classList.remove('sel');});btn.classList.add('sel');autoSave();}
-function testVoice(){var u=new SpeechSynthesisUtterance('안녕하세요. 테스트 음성입니다.');u.lang='ko-KR';speechSynthesis.speak(u);}
+
+function selV(id,btn,name,gender){
+  selVoice=id;
+  document.querySelectorAll('.vi').forEach(function(v){v.classList.remove('sel');});
+  if(btn)btn.classList.add('sel');
+  // 현재 선택 표시 업데이트
+  var bar=el('curVoiceBar'),nm=el('curVoiceName'),gn=el('curVoiceGender');
+  if(bar)bar.style.display='block';
+  if(nm)nm.textContent=name||id;
+  if(gn)gn.textContent=gender==='여'?'(여성)':gender==='남'?'(남성)':'';
+  autoSave();
+}
+
+// TTS 실제 미리듣기 (선택된 엔진+목소리로)
+async function testVoice(voiceId, voiceName){
+  var vid=voiceId||selVoice;
+  var eng=(el('ttsEng')||{}).value||'elevenlabs';
+  var text='안녕하세요. '+( voiceName||'선택된')+'  목소리 테스트입니다.';
+
+  if(eng==='elevenlabs'){
+    var key=(el('elKey')||{}).value||ST.settings.elKey;
+    if(!key){alert('ElevenLabs API 키를 입력하세요.');return;}
+    if(!vid){alert('목소리를 먼저 선택하세요.');return;}
+    try{
+      var r=await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','xi-api-key':key},
+        body:JSON.stringify({text:text,model_id:'eleven_multilingual_v2',voice_settings:{stability:.5,similarity_boost:.75}})
+      });
+      if(!r.ok){alert('ElevenLabs 오류: '+r.status);return;}
+      var blob=await r.blob();
+      var au=new Audio(URL.createObjectURL(blob));
+      au.play();
+    }catch(e){alert('미리듣기 오류: '+e.message);}
+
+  }else if(eng==='gemini'){
+    var key2=(el('gemKey')||{}).value||ST.settings.gemKey;
+    if(!key2){alert('Gemini API 키를 입력하세요.');return;}
+    var vn=vid||'Kore';
+    try{
+      var r2=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-tts:generateContent?key='+key2,{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:vn}}}}})
+      });
+      var d2=await r2.json();
+      var b64=d2.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if(!b64){alert('Gemini TTS 응답 오류');return;}
+      var au2=new Audio('data:audio/wav;base64,'+b64);
+      au2.play();
+    }catch(e){alert('미리듣기 오류: '+e.message);}
+
+  }else if(eng==='naver'){
+    var u=new SpeechSynthesisUtterance(text);u.lang='ko-KR';speechSynthesis.speak(u);
+
+  }else{
+    var u2=new SpeechSynthesisUtterance(text);u2.lang='ko-KR';speechSynthesis.speak(u2);
+  }
+}
 
 // ── 파이프라인 탭 ──────────────────────────────────
 function updatePipelineUI(){
@@ -1500,7 +1656,7 @@ async function generateTTS(text){
   if(eng==='gemini'){
     var key2=ST.settings.gemKey;if(!key2)return browserTTS(text);
     var vn=voice||'Kore';
-    var r2=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key='+key2,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:vn}}}}})});
+    var r2=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-tts:generateContent?key='+key2,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:vn}}}}})});
     var d2=await r2.json();if(!r2.ok)throw new Error((d2.error&&d2.error.message)||'Gemini TTS 오류');
     var b64=d2.candidates[0].content.parts[0].inlineData.data,bytes=atob(b64),arr=new Uint8Array(bytes.length);
     for(var i=0;i<bytes.length;i++)arr[i]=bytes.charCodeAt(i);
