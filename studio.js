@@ -1576,7 +1576,9 @@ function pcmToWavUrl(base64Pcm) {
   return URL.createObjectURL(new Blob([wav],{type:'audio/wav'}));
 }
 
-// 미리듣기 캐시 (voiceId+lang → blob URL)
+// 미리듣기 캐시
+// - _ttsCache: 메모리 (현재 세션)
+// - IndexedDB: 영구 저장 (새로고침/재접속 후에도 유지)
 var _ttsCache = {};
 var _ttsAbort = null;
 var _ttsAudio = null;
@@ -1590,30 +1592,51 @@ function _resetBtn(){
   }
 }
 
-// TTS 실제 미리듣기 (캐시 + 로딩 표시)
+function _ttsKey(eng, vid, reg){ return 'tts_preview_'+eng+'_'+vid+'_'+reg; }
+
+// IndexedDB에서 미리듣기 가져오기
+async function _ttsLoadCache(eng, vid, reg){
+  var key = eng+'|'+vid+'|'+reg;
+  if(_ttsCache[key]) return _ttsCache[key];
+  var blob = await idbGet(_ttsKey(eng, vid, reg));
+  if(blob){
+    var url = URL.createObjectURL(blob);
+    _ttsCache[key] = url;
+    return url;
+  }
+  return null;
+}
+
+// IndexedDB에 미리듣기 저장
+async function _ttsSaveCache(eng, vid, reg, blob){
+  var key = eng+'|'+vid+'|'+reg;
+  _ttsCache[key] = URL.createObjectURL(blob);
+  try { await idbSet(_ttsKey(eng, vid, reg), blob); } catch(e){}
+  return _ttsCache[key];
+}
+
+// TTS 실제 미리듣기 (IndexedDB 영구 캐시 + 로딩 표시)
 async function testVoice(voiceId, voiceName, region, btnEl) {
   var vid = voiceId || selVoice;
   var eng = (el('ttsEng')||{}).value || 'elevenlabs';
-  // Gemini는 curLangF를 우선 사용 (선택한 나라 언어로 미리듣기)
   var isGeminiEng = (eng==='gemini'||eng==='gemini31flash');
   var reg = isGeminiEng ? (curLangF && curLangF!=='ALL' && curLangF!=='F' && curLangF!=='M' ? curLangF : 'KR') : (region || curLangF || 'ALL');
   var text = PREVIEW_TEXT[reg] || PREVIEW_TEXT['ALL'];
 
-  // 이전 재생 중지
+  // 이전 재생/요청 중지
   if(_ttsAudio){try{_ttsAudio.pause();_ttsAudio.src='';}catch(e){}_ttsAudio=null;}
-  // 이전 요청 취소
   if(_ttsAbort){_ttsAbort.abort();_ttsAbort=null;}
   _resetBtn();
 
-  // 캐시 확인
-  var cacheKey = eng+'|'+vid+'|'+reg;
-  if(_ttsCache[cacheKey]){
-    _ttsAudio = new Audio(_ttsCache[cacheKey]);
+  // 캐시 확인 (메모리 → IndexedDB)
+  var cachedUrl = await _ttsLoadCache(eng, vid, reg);
+  if(cachedUrl){
+    _ttsAudio = new Audio(cachedUrl);
     _ttsAudio.play();
     return;
   }
 
-  // 버튼 정보 추출 (event.target에서)
+  // 버튼 정보
   if(!btnEl && typeof event!=='undefined' && event.target) btnEl = event.target;
   if(btnEl && btnEl.tagName==='BUTTON'){
     btnEl.textContent='⏳';
@@ -1653,7 +1676,6 @@ async function testVoice(voiceId, voiceName, region, btnEl) {
       var d2 = await r2.json();
       var b64 = d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].inlineData&&d2.candidates[0].content.parts[0].inlineData.data;
       if (!b64) { alert('Gemini TTS 응답 없음.\n오류: '+(d2.error&&d2.error.message||'')); _resetBtn(); return; }
-      // PCM → WAV URL 생성 후 blob으로 변환
       var wavUrl = pcmToWavUrl(b64);
       var wavRes = await fetch(wavUrl);
       blob = await wavRes.blob();
@@ -1666,8 +1688,8 @@ async function testVoice(voiceId, voiceName, region, btnEl) {
       return;
     }
 
-    var url = URL.createObjectURL(blob);
-    _ttsCache[cacheKey] = url;
+    // 캐시 저장 (메모리 + IndexedDB)
+    var url = await _ttsSaveCache(eng, vid, reg, blob);
     _ttsAudio = new Audio(url);
     _ttsAudio.play();
   } catch(e) {
@@ -1676,6 +1698,22 @@ async function testVoice(voiceId, voiceName, region, btnEl) {
     _resetBtn();
     _ttsAbort = null;
   }
+}
+
+// TTS 캐시 전체 삭제 (관리용)
+async function clearTtsCache(){
+  _ttsCache = {};
+  try {
+    var db = await idbOpen();
+    var tx = db.transaction('blobs','readwrite');
+    var store = tx.objectStore('blobs');
+    var req = store.getAllKeys();
+    req.onsuccess = function(){
+      var keys = req.result || [];
+      keys.filter(function(k){return typeof k==='string' && k.startsWith('tts_preview_');}).forEach(function(k){store.delete(k);});
+      alert('미리듣기 캐시가 삭제되었습니다.');
+    };
+  } catch(e) { alert('캐시 삭제 오류: '+e.message); }
 }
 
 // ── 파이프라인 탭 ──────────────────────────────────
