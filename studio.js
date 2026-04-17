@@ -214,8 +214,8 @@ var LANG_FILTERS={
     {id:'Umbriel',name:'Umbriel',desc:'Easy-going, Relaxed',region:'ALL',gender:'남'},
     {id:'Zubenelgenubi',name:'Zubenelgenubi',desc:'Casual, Relaxed',region:'ALL',gender:'남'},
   ],
-  gemini31flash:[{k:'ALL',l:'전체'},{k:'F',l:'👩 여성'},{k:'M',l:'👨 남성'}],
-  gemini:[{k:'ALL',l:'전체'},{k:'F',l:'👩 여성'},{k:'M',l:'👨 남성'}],
+  gemini31flash:[{k:'ALL',l:'전체'},{k:'F',l:'👩 여성'},{k:'M',l:'👨 남성'},{k:'KR',l:'🇰🇷 한국어'},{k:'US',l:'🇺🇸 영어'},{k:'JP',l:'🇯🇵 일본어'},{k:'CN',l:'🇨🇳 중국어'},{k:'ES',l:'🇪🇸 스페인어'},{k:'FR',l:'🇫🇷 프랑스어'},{k:'DE',l:'🇩🇪 독일어'},{k:'IT',l:'🇮🇹 이탈리아어'},{k:'BR',l:'🇧🇷 포르투갈어'}],
+  gemini:[{k:'ALL',l:'전체'},{k:'F',l:'👩 여성'},{k:'M',l:'👨 남성'},{k:'KR',l:'🇰🇷 한국어'},{k:'US',l:'🇺🇸 영어'},{k:'JP',l:'🇯🇵 일본어'},{k:'CN',l:'🇨🇳 중국어'},{k:'ES',l:'🇪🇸 스페인어'},{k:'FR',l:'🇫🇷 프랑스어'},{k:'DE',l:'🇩🇪 독일어'},{k:'IT',l:'🇮🇹 이탈리아어'},{k:'BR',l:'🇧🇷 포르투갈어'}],
   naver:[{k:'ALL',l:'전체'},{k:'KR',l:'🇰🇷 한국어'}],
   browser:[{k:'ALL',l:'전체'}]
 };
@@ -1478,9 +1478,14 @@ function renderVoices(eng,langF){
   var filtered=list;
 
   // 언어/성별 필터
+  var isGeminiEng = (eng==='gemini'||eng==='gemini31flash');
   if(langF && langF!=='ALL') {
     if(langF==='F') filtered=filtered.filter(function(v){return v.gender==='여';});
     else if(langF==='M') filtered=filtered.filter(function(v){return v.gender==='남';});
+    else if(isGeminiEng) {
+      // Gemini는 모든 목소리가 다국어 지원이므로 나라 필터여도 모든 목소리 표시
+      // 필터링하지 않고 미리듣기 언어만 그 나라 언어로 변경됨
+    }
     else filtered=filtered.filter(function(v){return v.region===langF;});
   }
 
@@ -1571,48 +1576,105 @@ function pcmToWavUrl(base64Pcm) {
   return URL.createObjectURL(new Blob([wav],{type:'audio/wav'}));
 }
 
-// TTS 실제 미리듣기
-async function testVoice(voiceId, voiceName, region) {
+// 미리듣기 캐시 (voiceId+lang → blob URL)
+var _ttsCache = {};
+var _ttsAbort = null;
+var _ttsAudio = null;
+var _ttsLoadingBtn = null;
+
+function _resetBtn(){
+  if(_ttsLoadingBtn){
+    _ttsLoadingBtn.textContent='▶';
+    _ttsLoadingBtn.disabled=false;
+    _ttsLoadingBtn=null;
+  }
+}
+
+// TTS 실제 미리듣기 (캐시 + 로딩 표시)
+async function testVoice(voiceId, voiceName, region, btnEl) {
   var vid = voiceId || selVoice;
   var eng = (el('ttsEng')||{}).value || 'elevenlabs';
-  var reg = region || curLangF || 'ALL';
+  // Gemini는 curLangF를 우선 사용 (선택한 나라 언어로 미리듣기)
+  var isGeminiEng = (eng==='gemini'||eng==='gemini31flash');
+  var reg = isGeminiEng ? (curLangF && curLangF!=='ALL' && curLangF!=='F' && curLangF!=='M' ? curLangF : 'KR') : (region || curLangF || 'ALL');
   var text = PREVIEW_TEXT[reg] || PREVIEW_TEXT['ALL'];
 
-  if (eng==='elevenlabs') {
-    var key = (el('elKey')||{}).value || ST.settings.elKey;
-    if (!key) { alert('ElevenLabs API 키를 입력하세요.'); return; }
-    if (!vid) { alert('목소리를 먼저 선택하세요.'); return; }
-    try {
-      var r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid, {
+  // 이전 재생 중지
+  if(_ttsAudio){try{_ttsAudio.pause();_ttsAudio.src='';}catch(e){}_ttsAudio=null;}
+  // 이전 요청 취소
+  if(_ttsAbort){_ttsAbort.abort();_ttsAbort=null;}
+  _resetBtn();
+
+  // 캐시 확인
+  var cacheKey = eng+'|'+vid+'|'+reg;
+  if(_ttsCache[cacheKey]){
+    _ttsAudio = new Audio(_ttsCache[cacheKey]);
+    _ttsAudio.play();
+    return;
+  }
+
+  // 버튼 정보 추출 (event.target에서)
+  if(!btnEl && typeof event!=='undefined' && event.target) btnEl = event.target;
+  if(btnEl && btnEl.tagName==='BUTTON'){
+    btnEl.textContent='⏳';
+    btnEl.disabled=true;
+    _ttsLoadingBtn=btnEl;
+  }
+
+  _ttsAbort = new AbortController();
+  var signal = _ttsAbort.signal;
+
+  try {
+    var blob = null;
+
+    if (eng==='elevenlabs') {
+      var key = (el('elKey')||{}).value || ST.settings.elKey;
+      if (!key) { alert('ElevenLabs API 키를 입력하세요.'); _resetBtn(); return; }
+      if (!vid) { alert('목소리를 먼저 선택하세요.'); _resetBtn(); return; }
+      var r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+vid+'?output_format=mp3_22050_32', {
         method:'POST',
         headers:{'Content-Type':'application/json','xi-api-key':key},
-        body:JSON.stringify({text:text,model_id:'eleven_multilingual_v2',voice_settings:{stability:.5,similarity_boost:.75}})
+        body:JSON.stringify({text:text,model_id:'eleven_flash_v2_5',voice_settings:{stability:.5,similarity_boost:.75}}),
+        signal:signal
       });
-      if (!r.ok) { alert('ElevenLabs 오류: '+r.status); return; }
-      var blob = await r.blob();
-      new Audio(URL.createObjectURL(blob)).play();
-    } catch(e) { alert('미리듣기 오류: '+e.message); }
+      if (!r.ok) { alert('ElevenLabs 오류: '+r.status); _resetBtn(); return; }
+      blob = await r.blob();
 
-  } else if (eng==='gemini' || eng==='gemini31flash') {
-    var key2 = (el('gemKey')||{}).value || ST.settings.gemKey;
-    if (!key2) { alert('Gemini API 키를 입력하세요.'); return; }
-    var vn = vid || 'Kore';
-    var modelId = eng==='gemini31flash' ? 'gemini-3.1-flash-tts-preview' : 'gemini-2.5-pro-preview-tts';
-    try {
+    } else if (isGeminiEng) {
+      var key2 = (el('gemKey')||{}).value || ST.settings.gemKey;
+      if (!key2) { alert('Gemini API 키를 입력하세요.'); _resetBtn(); return; }
+      var vn = vid || 'Kore';
+      var modelId = eng==='gemini31flash' ? 'gemini-3.1-flash-tts-preview' : 'gemini-2.5-pro-preview-tts';
       var r2 = await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+modelId+':generateContent?key='+key2, {
         method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({contents:[{parts:[{text:text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:vn}}}}})
+        body:JSON.stringify({contents:[{parts:[{text:text}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:vn}}}}}),
+        signal:signal
       });
       var d2 = await r2.json();
       var b64 = d2.candidates&&d2.candidates[0]&&d2.candidates[0].content&&d2.candidates[0].content.parts&&d2.candidates[0].content.parts[0]&&d2.candidates[0].content.parts[0].inlineData&&d2.candidates[0].content.parts[0].inlineData.data;
-      if (!b64) { alert('Gemini TTS 응답 없음.\n오류: '+(d2.error&&d2.error.message||JSON.stringify(d2).substring(0,100))); return; }
-      new Audio(pcmToWavUrl(b64)).play();
-    } catch(e) { alert('미리듣기 오류: '+e.message); }
+      if (!b64) { alert('Gemini TTS 응답 없음.\n오류: '+(d2.error&&d2.error.message||'')); _resetBtn(); return; }
+      // PCM → WAV URL 생성 후 blob으로 변환
+      var wavUrl = pcmToWavUrl(b64);
+      var wavRes = await fetch(wavUrl);
+      blob = await wavRes.blob();
 
-  } else {
-    var u = new SpeechSynthesisUtterance(text);
-    u.lang = reg==='KR'?'ko-KR':reg==='JP'?'ja-JP':reg==='CN'?'zh-CN':'en-US';
-    speechSynthesis.speak(u);
+    } else {
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = reg==='KR'?'ko-KR':reg==='JP'?'ja-JP':reg==='CN'?'zh-CN':'en-US';
+      speechSynthesis.speak(u);
+      _resetBtn();
+      return;
+    }
+
+    var url = URL.createObjectURL(blob);
+    _ttsCache[cacheKey] = url;
+    _ttsAudio = new Audio(url);
+    _ttsAudio.play();
+  } catch(e) {
+    if(e.name!=='AbortError') alert('미리듣기 오류: '+e.message);
+  } finally {
+    _resetBtn();
+    _ttsAbort = null;
   }
 }
 
