@@ -734,6 +734,10 @@ input[type=password]{font-family:monospace}
           <div class="vlist" id="voiceList"></div>
           <label style="margin-top:11px">말하기 속도</label>
           <div class="sr"><input type="range" min="0.5" max="2.0" step="0.05" value="1.0" id="ttsSpd" oninput="document.getElementById('ttsSpdV').textContent=parseFloat(this.value).toFixed(2)+'x';autoSave()"><span class="sv" id="ttsSpdV">1.00x</span></div>
+          <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text3)">
+            <span>📦 미리듣기 캐시 (한 번 들은 목소리는 영구 저장)</span>
+            <button onclick="clearTtsCache()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer">🗑 캐시 삭제</button>
+          </div>
         </div>
       </div>
       <div>
