@@ -417,6 +417,30 @@ input[type=password]{font-family:monospace}
     <div class="log-box" id="sbLog" style="height:85px"></div>
   </div>
   <div style="flex:1;overflow-y:auto;padding:12px">
+    <!-- 캐릭터 & 스타일 참조 접기/펼치기 패널 -->
+    <div class="card" style="margin-bottom:10px">
+      <div class="ctitle" style="cursor:pointer;user-select:none" onclick="toggleCharStylePanel()">
+        🎭 캐릭터 &amp; 스타일 참조
+        <span id="charStyleToggle" style="margin-left:auto;font-size:11px;color:var(--text3)">▼ 펼치기</span>
+      </div>
+      <div id="charStylePanel" style="display:none;margin-top:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px">캐릭터 설정 (이미지 일관성)</div>
+            <div class="hint" style="margin-bottom:6px">최대 5개 — 이미지 생성 시 캐릭터 정보가 프롬프트에 포함됩니다</div>
+            <div class="char-list" id="charList"></div>
+            <div class="char-add" id="charAdd" onclick="addChar()" style="margin-top:6px"><span>+</span><span style="font-size:13px">캐릭터 추가</span></div>
+            <input type="file" id="charImgInput" accept="image/*" style="display:none" onchange="charImgUploaded(this)">
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px">스타일 참조 이미지</div>
+            <div class="hint" style="margin-bottom:6px">이미지 생성 시 스타일 참조 (최대 3장, 새로고침 후 유지)</div>
+            <div class="ref-list" id="styleRefList"><div class="ref-add" onclick="document.getElementById('styleRefInput').click()">+</div></div>
+            <input type="file" id="styleRefInput" accept="image/*" multiple style="display:none" onchange="addStyleRef(this)">
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="sgrid" id="sceneGrid"></div>
   </div>
 </div>
@@ -676,25 +700,14 @@ input[type=password]{font-family:monospace}
             <button class="btn bgh" id="r916" onclick="setRatio('9:16')" style="flex:1">📱 9:16 쇼츠</button>
           </div>
         </div>
-        <div class="card">
-          <div class="ctitle">캐릭터 설정 (이미지 일관성)</div>
-          <div class="hint" style="margin-bottom:8px">최대 5개 — 이미지 생성 시 캐릭터 정보가 프롬프트에 포함됩니다<br><b style="color:var(--accent)">새로고침 후에도 유지됩니다 (base64 저장)</b></div>
-          <div class="char-list" id="charList"></div>
-          <div class="char-add" id="charAdd" onclick="addChar()" style="margin-top:8px"><span>+</span><span style="font-size:13px">캐릭터 추가</span></div>
-          <input type="file" id="charImgInput" accept="image/*" style="display:none" onchange="charImgUploaded(this)">
-        </div>
-        <div class="card">
-          <div class="ctitle">스타일 참조 이미지</div>
-          <div class="hint" style="margin-bottom:6px">이미지 생성 시 스타일 참조 (최대 3장, 새로고침 후 유지)</div>
-          <div class="ref-list" id="styleRefList"><div class="ref-add" onclick="document.getElementById('styleRefInput').click()">+</div></div>
-          <input type="file" id="styleRefInput" accept="image/*" multiple style="display:none" onchange="addStyleRef(this)">
-        </div>
+
         <div class="card">
           <div class="ctitle">TTS 음성 설정</div>
           <label>음성 엔진</label>
           <select id="ttsEng" onchange="changeTtsEng();autoSave()">
             <option value="elevenlabs">ElevenLabs (고품질)</option>
-            <option value="gemini">Gemini TTS</option>
+            <option value="gemini31flash">Gemini 3.1 Flash TTS (최신)</option>
+            <option value="gemini">Gemini 2.5 Pro TTS</option>
             <option value="naver">네이버 클로바 (로컬 서버 필요)</option>
             <option value="browser">브라우저 내장 (무료)</option>
           </select>
@@ -714,7 +727,8 @@ input[type=password]{font-family:monospace}
           <div id="tierFilter" style="display:none;margin:5px 0;display:flex;gap:5px;flex-wrap:wrap">
             <button class="vfb on" id="tier-ALL" onclick="setTierF('ALL',this)">전체</button>
             <button class="vfb" id="tier-free" onclick="setTierF('free',this)">💚 Free</button>
-            <button class="vfb" id="tier-creator" onclick="setTierF('creator',this)">⭐ Creator</button>
+            <button class="vfb" id="tier-starter" onclick="setTierF('starter',this)">🔵 Starter $5</button>
+            <button class="vfb" id="tier-creator" onclick="setTierF('creator',this)">⭐ Creator $22</button>
           </div>
           <div class="hint" id="vcHint" style="margin-bottom:5px"></div>
           <div class="vlist" id="voiceList"></div>
