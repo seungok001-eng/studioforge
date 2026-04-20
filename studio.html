@@ -303,12 +303,23 @@ input[type=password]{font-family:monospace}
         <div class="card">
           <div class="ctitle">이미지 생성 엔진</div>
           <select id="imgEngine" onchange="updateEngineUI();autoSave()">
-            <option value="gemini">🔵 Gemini Imagen 3 (API 직접)</option>
+            <option value="gemini">🔵 Gemini (캐릭터 이미지 있으면 Nano Banana 자동 사용)</option>
             <option value="grok">🟣 Grok Aurora (xAI API 직접)</option>
             <option value="gemini_flow">🟢 Google Flow (확장프로그램 자동화)</option>
             <option value="grok_flow">🟠 Grok Automation (확장프로그램 자동화)</option>
           </select>
           <div id="engDesc" class="hint" style="margin-top:6px"></div>
+          <!-- Nano Banana 모델 선택 -->
+          <label style="margin-top:10px">Nano Banana 모델 (캐릭터 일관성)</label>
+          <select id="imgModel" onchange="ST.settings.imgModel=this.value;autoSave()">
+            <option value="gemini-2.5-flash-image-preview">🍌 Nano Banana (2.5 Flash Image) - 빠름</option>
+            <option value="gemini-3-pro-image-preview">🍌 Nano Banana Pro (3 Pro Image) - 최고품질</option>
+            <option value="gemini-3.1-flash-image-preview">🍌 Nano Banana 2 (3.1 Flash Image) - 최신, 14개 참조</option>
+          </select>
+          <div class="hint" style="margin-top:4px;font-size:10px;color:var(--text3)">
+            캐릭터 이미지를 올리면 자동으로 이 모델이 사용되어 이미지 참조됨<br>
+            캐릭터/스타일 이미지가 없으면 Imagen 3으로 생성
+          </div>
         </div>
         <div class="card">
           <div class="ctitle">이미지 공통 설정</div>
@@ -736,12 +747,17 @@ input[type=password]{font-family:monospace}
           <!-- 언어 필터 -->
           <label>언어 필터</label>
           <div class="vf" id="voiceFilter"></div>
-          <!-- ElevenLabs 티어 필터 -->
+          <!-- ElevenLabs 모델 필터 -->
           <div id="tierFilter" style="display:none;margin:5px 0;display:flex;gap:5px;flex-wrap:wrap">
             <button class="vfb on" id="tier-ALL" onclick="setTierF('ALL',this)">전체</button>
-            <button class="vfb" id="tier-free" onclick="setTierF('free',this)">💚 Free</button>
-            <button class="vfb" id="tier-starter" onclick="setTierF('starter',this)">🔵 Starter $5</button>
-            <button class="vfb" id="tier-creator" onclick="setTierF('creator',this)">⭐ Creator $22</button>
+            <button class="vfb" id="tier-v3" onclick="setTierF('v3',this)">⭐ Eleven v3 (표현력)</button>
+            <button class="vfb" id="tier-multilingual" onclick="setTierF('multilingual',this)">🌐 Multilingual v2 (안정)</button>
+          </div>
+          <!-- ElevenLabs 실시간 목소리 새로고침 -->
+          <div id="elVoiceActions" style="display:none;margin:6px 0;display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+            <button id="btnReloadVoices" onclick="loadElevenLabsVoicesFromAPI()" style="background:linear-gradient(135deg,#a855f7,#3b82f6);color:#fff;border:none;padding:6px 12px;border-radius:7px;font-size:11px;cursor:pointer;font-weight:700">🔄 목소리 새로고침 (API)</button>
+            <button onclick="revertToDefaultElevenLabsVoices()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 10px;border-radius:7px;font-size:11px;cursor:pointer">↺ 기본 목록</button>
+            <span style="font-size:10px;color:var(--text3);flex:1">⚡ 내 계정의 실제 목소리 불러오기</span>
           </div>
           <div class="hint" id="vcHint" style="margin-bottom:5px"></div>
           <div class="vlist" id="voiceList"></div>
