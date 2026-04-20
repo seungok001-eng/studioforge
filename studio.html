@@ -619,6 +619,19 @@ input[type=password]{font-family:monospace}
             <button class="btn ba capcut-btn" onclick="sendToCapCut()" disabled>🎬 CapCut Draft 생성</button>
             <button class="btn bgh bsm capcut-btn" onclick="renderWithFFmpeg()" disabled>⚡ FFmpeg 렌더링</button>
           </div>
+          <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+            <div class="ctitle" style="color:var(--green);font-size:12px;margin-bottom:8px">🎥 FFmpeg 직접 mp4 렌더링</div>
+            <div class="hint" style="margin-bottom:8px">CapCut 없이 바로 mp4로 출력 — media_inbox 폴더의 파일들로 영상 생성</div>
+            <label style="display:flex;align-items:center;gap:6px;margin:6px 0;cursor:pointer;font-size:12px">
+              <input type="checkbox" id="fxRandomEffects" checked style="cursor:pointer">
+              <span>✨ 랜덤 화면 효과 (줌인/줌아웃/팬 Ken Burns)</span>
+            </label>
+            <div style="font-size:10px;color:var(--text3);margin-bottom:8px;padding-left:22px">
+              10가지 효과 랜덤: 줌인/줌아웃/좌우팬/상하팬/대각선팬/줌+팬 조합<br>
+              범위는 완만하게 (1.0~1.12배 줌, 어지럽지 않음)
+            </div>
+            <button class="btn bp capcut-btn" onclick="renderMp4Direct()" disabled style="width:100%">🎬 mp4 직접 렌더링 시작</button>
+          </div>
         </div>
         <div class="card">
           <div class="ctitle">전체 자동화 흐름</div>
