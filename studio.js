@@ -156,122 +156,26 @@ var VOICES={
     {id:'Zubenelgenubi',name:'Zubenelgenubi',desc:'Casual, Relaxed',region:'ALL',gender:'남'},
   ],
   naver:[
-    // ──────── 🇰🇷 한국어 - Pro (NeuVis 고품질) ────────
-    {id:'vara',name:'아라 Pro',desc:'감정표현 (NeuVis)',region:'KR',gender:'여',tier:'pro'},
-    {id:'vmikyung',name:'미경 Pro',desc:'감정표현 (NeuVis)',region:'KR',gender:'여',tier:'pro'},
-    {id:'vdain',name:'다인 Pro',desc:'감정표현 (NeuVis)',region:'KR',gender:'여',tier:'pro'},
-    {id:'vyuna',name:'유나 Pro',desc:'감정표현 (NeuVis)',region:'KR',gender:'여',tier:'pro'},
-    {id:'vgoeun',name:'고은 Pro',desc:'감정표현 (NeuVis)',region:'KR',gender:'여',tier:'pro'},
-    {id:'vhyeri',name:'혜리 Pro',desc:'여성 Pro (NeuVis)',region:'KR',gender:'여',tier:'pro'},
-    {id:'vdaeseong',name:'대성 Pro',desc:'감정표현 (NeuVis)',region:'KR',gender:'남',tier:'pro'},
-    {id:'vdonghyun',name:'동현 Pro',desc:'남성 Pro (NeuVis)',region:'KR',gender:'남',tier:'pro'},
-    {id:'vian',name:'이안 Pro',desc:'남성 Pro (NeuVis)',region:'KR',gender:'남',tier:'pro'},
-    // ──────── 🇰🇷 한국어 - 여성 ────────
-    {id:'nara',name:'아라',desc:'표준 여성, 감정표현',region:'KR',gender:'여'},
-    {id:'nara_call',name:'아라 콜센터',desc:'콜센터 상담원',region:'KR',gender:'여'},
-    {id:'dara_ang',name:'아라 (화남)',desc:'화난 감정',region:'KR',gender:'여'},
-    {id:'mijin',name:'미진',desc:'표준 여성',region:'KR',gender:'여'},
-    {id:'nmijin',name:'미진 (신버전)',desc:'부드러운 여성',region:'KR',gender:'여'},
-    {id:'nbora',name:'보라',desc:'활기찬 여성',region:'KR',gender:'여'},
-    {id:'nes_c_hyeri',name:'혜리',desc:'친근한 여성',region:'KR',gender:'여'},
-    {id:'nes_c_mikyung',name:'미경',desc:'차분한 여성',region:'KR',gender:'여'},
-    {id:'nes_c_sohyun',name:'소현',desc:'맑은 여성',region:'KR',gender:'여'},
-    {id:'neunseo',name:'은서',desc:'차분한 여성',region:'KR',gender:'여'},
-    {id:'neunyoung',name:'은영',desc:'뉴스 낭독',region:'KR',gender:'여'},
-    {id:'ngoeun',name:'고은',desc:'밝은 여성',region:'KR',gender:'여'},
-    {id:'nheera',name:'희라',desc:'밝고 경쾌한',region:'KR',gender:'여'},
-    {id:'nihyun',name:'이현',desc:'차분한 여성',region:'KR',gender:'여'},
-    {id:'njangj',name:'드림',desc:'몽환적 여성',region:'KR',gender:'여'},
-    {id:'njiwon',name:'지원',desc:'지적인 여성',region:'KR',gender:'여'},
-    {id:'njiyun',name:'지윤',desc:'부드러운 여성',region:'KR',gender:'여'},
-    {id:'nkyunglee',name:'경이',desc:'안정적 여성',region:'KR',gender:'여'},
-    {id:'nminjeong',name:'민정',desc:'다정한 여성',region:'KR',gender:'여'},
-    {id:'nminseo',name:'민서',desc:'젊은 여성',region:'KR',gender:'여'},
-    {id:'nminyoung',name:'민영',desc:'차분한 여성',region:'KR',gender:'여'},
-    {id:'napple',name:'늘봄',desc:'상쾌한 여성',region:'KR',gender:'여'},
-    {id:'noyj',name:'봄달',desc:'따뜻한 여성',region:'KR',gender:'여'},
-    {id:'nsabina',name:'마녀 사비나',desc:'마녀 캐릭터',region:'KR',gender:'여'},
-    {id:'nshasha',name:'샤샤',desc:'발랄한 여성',region:'KR',gender:'여'},
-    {id:'nsujin',name:'수진',desc:'선명한 여성',region:'KR',gender:'여'},
-    {id:'nsunhee',name:'선희',desc:'부드러운 여성',region:'KR',gender:'여'},
-    {id:'nsunkyung',name:'선경',desc:'차분한 여성',region:'KR',gender:'여'},
-    {id:'ntiffany',name:'기서',desc:'활발하고 밝은',region:'KR',gender:'여'},
-    {id:'nyeji',name:'예지',desc:'청아한 여성',region:'KR',gender:'여'},
-    {id:'nyejin',name:'예진',desc:'부드러운 여성',region:'KR',gender:'여'},
-    {id:'nyounghwa',name:'영화 정',desc:'영화 내레이션 여성',region:'KR',gender:'여'},
-    {id:'nyoungmi',name:'영미',desc:'따뜻한 여성',region:'KR',gender:'여'},
-    {id:'nyujin',name:'유진',desc:'밝은 여성',region:'KR',gender:'여'},
-    {id:'nyuna',name:'유나',desc:'밝은 여성',region:'KR',gender:'여'},
-    {id:'ndain',name:'다인',desc:'어린 여자아이',region:'KR',gender:'여'},
-    {id:'ngaram',name:'가람',desc:'어린 여자아이',region:'KR',gender:'여'},
-    {id:'nmeow',name:'야옹',desc:'어린 여자아이, 귀여움',region:'KR',gender:'여'},
-    // ──────── 🇰🇷 한국어 - 남성 ────────
-    {id:'jinho',name:'진호',desc:'중저음 남성',region:'KR',gender:'남'},
-    {id:'njinho',name:'진호 (신버전)',desc:'깊은 남성',region:'KR',gender:'남'},
-    {id:'ndaeseong',name:'대성',desc:'중저음 남성',region:'KR',gender:'남'},
-    {id:'ndonghyun',name:'동현',desc:'부드러운 남성',region:'KR',gender:'남'},
-    {id:'neunwoo',name:'은우',desc:'젊은 남성',region:'KR',gender:'남'},
-    {id:'nes_c_kihyo',name:'기효',desc:'밝은 남성',region:'KR',gender:'남'},
-    {id:'ngyeongjun',name:'경준',desc:'안정적 남성',region:'KR',gender:'남'},
-    {id:'nian',name:'이안',desc:'깔끔한 남성',region:'KR',gender:'남'},
-    {id:'njaewook',name:'재욱',desc:'깊이 있는 남성',region:'KR',gender:'남'},
-    {id:'njihun',name:'지훈',desc:'따뜻한 남성',region:'KR',gender:'남'},
-    {id:'njihwan',name:'지환',desc:'차분한 남성',region:'KR',gender:'남'},
-    {id:'njonghyeok',name:'종혁',desc:'중저음 남성',region:'KR',gender:'남'},
-    {id:'njonghyun',name:'종현',desc:'부드러운 남성',region:'KR',gender:'남'},
-    {id:'njooahn',name:'주안',desc:'깊고 안정적',region:'KR',gender:'남'},
-    {id:'njoonyoung',name:'준영',desc:'20대 남성',region:'KR',gender:'남'},
-    {id:'nkitae',name:'기태',desc:'젊은 남성',region:'KR',gender:'남'},
-    {id:'nkyungtae',name:'경태',desc:'안정적 남성',region:'KR',gender:'남'},
-    {id:'nkyuwon',name:'규원',desc:'젊은 남성',region:'KR',gender:'남'},
-    {id:'nmammon',name:'악마 마몬',desc:'악마 캐릭터',region:'KR',gender:'남'},
-    {id:'nminsang',name:'민상',desc:'표준 남성',region:'KR',gender:'남'},
-    {id:'nmovie',name:'영화 최',desc:'영화 내레이션 남성',region:'KR',gender:'남'},
-    {id:'nraewon',name:'래원',desc:'내레이션 남성',region:'KR',gender:'남'},
-    {id:'nreview',name:'리뷰 박',desc:'리뷰어 남성',region:'KR',gender:'남'},
-    {id:'nsangdo',name:'상도',desc:'중년 남성',region:'KR',gender:'남'},
-    {id:'nseonghoon',name:'성훈',desc:'차분한 남성',region:'KR',gender:'남'},
-    {id:'nseungpyo',name:'승표',desc:'신뢰감 있는 남성',region:'KR',gender:'남'},
-    {id:'nsinu',name:'신우',desc:'젊은 남성',region:'KR',gender:'남'},
-    {id:'nsiyoon',name:'시윤',desc:'부드러운 남성',region:'KR',gender:'남'},
-    {id:'ntaejin',name:'태진',desc:'중후한 남성',region:'KR',gender:'남'},
-    {id:'nwontak',name:'원탁',desc:'안정적 남성',region:'KR',gender:'남'},
-    {id:'nwoosik',name:'우식',desc:'따뜻한 남성',region:'KR',gender:'남'},
-    {id:'nyoungil',name:'영일',desc:'중년 남성',region:'KR',gender:'남'},
-    {id:'nhajun',name:'하준',desc:'10대 남자아이',region:'KR',gender:'남'},
-    {id:'nwoof',name:'우프',desc:'어린 남자아이',region:'KR',gender:'남'},
-    // ──────── 🇺🇸 영어 ────────
-    {id:'clara',name:'Clara',desc:'영국식 여성',region:'US',gender:'여'},
-    {id:'danna',name:'Anna',desc:'미국 여성',region:'US',gender:'여'},
-    {id:'djoey',name:'Joey',desc:'밝은 여성',region:'US',gender:'여'},
-    {id:'matt',name:'Matt',desc:'미국 남성',region:'US',gender:'남'},
-    {id:'dara-danna',name:'아라 & Anna',desc:'한+영 혼합',region:'US',gender:'여'},
-    {id:'dsinu-matt',name:'신우 & Matt',desc:'한+영 혼합',region:'US',gender:'남'},
-    // ──────── 🇯🇵 일본어 ────────
-    {id:'dnaomi',name:'Naomi',desc:'표준 여성',region:'JP',gender:'여'},
-    {id:'dnaomi_formal',name:'Naomi (뉴스)',desc:'뉴스 앵커',region:'JP',gender:'여'},
-    {id:'dnaomi_joyful',name:'Naomi (기쁨)',desc:'밝은 여성',region:'JP',gender:'여'},
-    {id:'nnaomi',name:'Naomi (신버전)',desc:'여성',region:'JP',gender:'여'},
-    {id:'dsayuri',name:'Sayuri',desc:'부드러운 여성',region:'JP',gender:'여'},
-    {id:'nsayuri',name:'Sayuri (신버전)',desc:'여성',region:'JP',gender:'여'},
-    {id:'dtomoko',name:'Tomoko',desc:'차분한 여성',region:'JP',gender:'여'},
-    {id:'ntomoko',name:'Tomoko (신버전)',desc:'여성',region:'JP',gender:'여'},
-    {id:'deriko',name:'Eriko',desc:'여성',region:'JP',gender:'여'},
-    {id:'driko',name:'Riko',desc:'젊은 여성',region:'JP',gender:'여'},
-    {id:'dmio',name:'Mio',desc:'청아한 여성',region:'JP',gender:'여'},
-    {id:'dayumu',name:'Ayumu',desc:'남성',region:'JP',gender:'남'},
-    {id:'ddaiki',name:'Daiki',desc:'남성',region:'JP',gender:'남'},
-    {id:'dhajime',name:'Hajime',desc:'남성',region:'JP',gender:'남'},
-    {id:'shinji',name:'Shinji',desc:'깊은 남성',region:'JP',gender:'남'},
-    // ──────── 🇨🇳 중국어 ────────
-    {id:'meimei',name:'Meimei',desc:'여성',region:'CN',gender:'여'},
-    {id:'liangliang',name:'Liangliang',desc:'남성',region:'CN',gender:'남'},
-    // ──────── 🇹🇼 대만어 ────────
-    {id:'chiahua',name:'Chiahua',desc:'여성',region:'TW',gender:'여'},
-    {id:'kuanlin',name:'Kuanlin',desc:'남성',region:'TW',gender:'남'},
-    // ──────── 🇪🇸 스페인어 ────────
-    {id:'carmen',name:'Carmen',desc:'여성',region:'ES',gender:'여'},
-    {id:'jose',name:'Jose',desc:'남성',region:'ES',gender:'남'},
+    {id:'nara',name:'Nara',desc:'표준 여성',region:'KR',gender:'여'},
+    {id:'nminsang',name:'Minsang',desc:'표준 남성',region:'KR',gender:'남'},
+    {id:'njinho',name:'Jinho',desc:'중저음 남성',region:'KR',gender:'남'},
+    {id:'njooahn',name:'Jooan',desc:'깊고 안정적',region:'KR',gender:'남'},
+    {id:'njiyeon',name:'Jiyeon',desc:'따뜻한 여성',region:'KR',gender:'여'},
+    {id:'nsujin',name:'Sujin',desc:'선명한 여성',region:'KR',gender:'여'},
+    {id:'nmijin',name:'Mijin',desc:'부드러운 여성',region:'KR',gender:'여'},
+    {id:'nkyunglee',name:'Kyunglee',desc:'안정적 여성',region:'KR',gender:'여'},
+    {id:'nara_call',name:'Nara 콜센터',desc:'콜센터 전용',region:'KR',gender:'여'},
+    {id:'noyj',name:'Yujin',desc:'뉴스 낭독',region:'KR',gender:'여'},
+    {id:'neunyoung',name:'Eunyoung',desc:'뉴스 낭독',region:'KR',gender:'여'},
+    {id:'nsabina',name:'Sabina',desc:'내레이션',region:'KR',gender:'여'},
+    {id:'nraewon',name:'Raewon',desc:'내레이션 남성',region:'KR',gender:'남'},
+    {id:'ntiffany',name:'Tiffany',desc:'활발하고 밝은',region:'KR',gender:'여'},
+    {id:'nwoongi',name:'Woongi',desc:'차분하고 부드러운',region:'KR',gender:'남'},
+    {id:'nhajun',name:'Hajun',desc:'10대 소년',region:'KR',gender:'남'},
+    {id:'nbora',name:'Bora',desc:'활기찬 여성',region:'KR',gender:'여'},
+    {id:'njangho',name:'Jangho',desc:'노인 남성',region:'KR',gender:'남'},
+    {id:'njoonyoung',name:'Joonyoung',desc:'20대 남성',region:'KR',gender:'남'},
+    {id:'nminsang_call',name:'Minsang 콜센터',desc:'콜센터 남성',region:'KR',gender:'남'},
   ]
 };
 var LANG_FILTERS={
@@ -312,7 +216,7 @@ var LANG_FILTERS={
   ],
   gemini31flash:[{k:'ALL',l:'전체'},{k:'F',l:'👩 여성'},{k:'M',l:'👨 남성'},{k:'KR',l:'🇰🇷 한국어'},{k:'US',l:'🇺🇸 영어'},{k:'JP',l:'🇯🇵 일본어'},{k:'CN',l:'🇨🇳 중국어'},{k:'ES',l:'🇪🇸 스페인어'},{k:'FR',l:'🇫🇷 프랑스어'},{k:'DE',l:'🇩🇪 독일어'},{k:'IT',l:'🇮🇹 이탈리아어'},{k:'BR',l:'🇧🇷 포르투갈어'}],
   gemini:[{k:'ALL',l:'전체'},{k:'F',l:'👩 여성'},{k:'M',l:'👨 남성'},{k:'KR',l:'🇰🇷 한국어'},{k:'US',l:'🇺🇸 영어'},{k:'JP',l:'🇯🇵 일본어'},{k:'CN',l:'🇨🇳 중국어'},{k:'ES',l:'🇪🇸 스페인어'},{k:'FR',l:'🇫🇷 프랑스어'},{k:'DE',l:'🇩🇪 독일어'},{k:'IT',l:'🇮🇹 이탈리아어'},{k:'BR',l:'🇧🇷 포르투갈어'}],
-  naver:[{k:'ALL',l:'전체'},{k:'F',l:'👩 여성'},{k:'M',l:'👨 남성'},{k:'KR',l:'🇰🇷 한국어'},{k:'US',l:'🇺🇸 영어'},{k:'JP',l:'🇯🇵 일본어'},{k:'CN',l:'🇨🇳 중국어'},{k:'TW',l:'🇹🇼 대만어'},{k:'ES',l:'🇪🇸 스페인어'},{k:'pro',l:'⭐ Pro (고품질)'}],
+  naver:[{k:'ALL',l:'전체'},{k:'KR',l:'🇰🇷 한국어'}],
   browser:[{k:'ALL',l:'전체'}]
 };
 
@@ -1573,14 +1477,14 @@ function renderVoices(eng,langF){
   var list=VOICES[eng]||[];
   var filtered=list;
 
-  // 언어/성별/티어 필터
+  // 언어/성별 필터
   var isGeminiEng = (eng==='gemini'||eng==='gemini31flash');
   if(langF && langF!=='ALL') {
     if(langF==='F') filtered=filtered.filter(function(v){return v.gender==='여';});
     else if(langF==='M') filtered=filtered.filter(function(v){return v.gender==='남';});
-    else if(langF==='pro') filtered=filtered.filter(function(v){return v.tier==='pro';}); // 네이버 Pro 티어
     else if(isGeminiEng) {
       // Gemini는 모든 목소리가 다국어 지원이므로 나라 필터여도 모든 목소리 표시
+      // 필터링하지 않고 미리듣기 언어만 그 나라 언어로 변경됨
     }
     else filtered=filtered.filter(function(v){return v.region===langF;});
   }
@@ -1638,7 +1542,6 @@ var PREVIEW_TEXT = {
   UK: 'Hello! This is a voice preview.',
   JP: 'こんにちは。音声テストです。',
   CN: '你好，这是语音测试。',
-  TW: '你好，這是語音測試。',
   ES: 'Hola, esta es una prueba de voz.',
   FR: 'Bonjour, ceci est un test de voix.',
   DE: 'Hallo, das ist ein Stimmtest.',
@@ -1777,23 +1680,9 @@ async function testVoice(voiceId, voiceName, region, btnEl) {
       var wavRes = await fetch(wavUrl);
       blob = await wavRes.blob();
 
-    } else if (eng==='naver') {
-      var cid = (el('navCid')||{}).value || ST.settings.navCid;
-      var cs  = (el('navCs')||{}).value  || ST.settings.navCs;
-      if (!cid || !cs) { alert('네이버 클로바 Client ID/Secret을 입력하세요.'); _resetBtn(); return; }
-      if (!serverConnected) { alert('네이버 클로바는 CapCut 로컬 서버가 필요합니다.\nserver.py를 실행해 주세요.'); _resetBtn(); return; }
-      var r3 = await fetch(CAPCUT_SERVER+'/naver_tts', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({text:text,speaker:vid,client_id:cid,client_secret:cs}),
-        signal:signal
-      });
-      if (!r3.ok) { alert('네이버 TTS 오류: '+r3.status); _resetBtn(); return; }
-      blob = await r3.blob();
-
     } else {
       var u = new SpeechSynthesisUtterance(text);
-      u.lang = reg==='KR'?'ko-KR':reg==='JP'?'ja-JP':reg==='CN'?'zh-CN':reg==='TW'?'zh-TW':reg==='ES'?'es-ES':'en-US';
+      u.lang = reg==='KR'?'ko-KR':reg==='JP'?'ja-JP':reg==='CN'?'zh-CN':'en-US';
       speechSynthesis.speak(u);
       _resetBtn();
       return;
@@ -1861,67 +1750,9 @@ async function sendToCapCut(){
   try{
     var r=await fetch(CAPCUT_SERVER+'/build_draft',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     var d=await r.json();
-    if(d.success){sbLog('CapCut draft 생성 완료! 경로: '+d.draft_path,'ok');alert('✓ CapCut Draft 생성 완료!\n\n'+d.draft_path+'\n\n'+(d.next_step||''));}
-    else{sbLog('오류: '+(d.error||'알 수 없는 오류'),'err');alert('오류: '+(d.error||'알 수 없는 오류'));}
-  }catch(e){
-    sbLog('서버 오류: '+e.message,'err');
-    alert('CapCut Draft 실패: '+e.message+'\n\n해결책:\n1) 서버가 실행 중인지 확인 (서버시작.bat)\n2) media_inbox 폴더에 scene_001.png, tts_001.wav 파일이 있는지 확인\n3) 브라우저 새로고침 후 재시도');
-  }
-}
-
-// FFmpeg로 mp4 직접 렌더링 (Ken Burns 효과 + 랜덤)
-async function renderMp4Direct(){
-  if(!serverConnected){alert('CapCut 서버가 실행되어 있지 않습니다.\n서버시작.bat/sh를 먼저 실행하세요.');return;}
-  var hasImg=P.scenes&&P.scenes.some(function(s){return s.imgBlob;});
-  if(!hasImg){alert('이미지가 없습니다. 먼저 생성하세요.');return;}
-
-  var useEffects=(el('fxRandomEffects')||{}).checked!==false;
-  if(!confirm('FFmpeg로 mp4를 렌더링할까요?\n\n'
-    +'• 이미지 + TTS 자동 합성\n'
-    +(useEffects?'• ✨ 랜덤 화면 효과 적용 (줌인/줌아웃/팬)\n':'• 화면 효과 없음\n')
-    +'• media_inbox 폴더의 파일 사용\n\n'
-    +'씬 수: '+P.scenes.length+'개\n'
-    +'예상 시간: '+Math.ceil(P.scenes.length*10)+'초 내외')){return;}
-
-  sbLog('FFmpeg mp4 렌더링 시작 ('+P.scenes.length+'개 씬, 효과='+(useEffects?'ON':'OFF')+')...','info');
-  
-  var scenes=P.scenes.map(function(s,i){
-    var n=String(i+1).padStart(3,'0');
-    return {
-      id:i,
-      image_path:'scene_'+n+'.png',
-      audio_path:s.audioBlob?'tts_'+n+'.wav':'',
-      duration_sec:estDur(s.narration)
-    };
-  });
-  
-  var payload={
-    project_name:(P.name||'StudioForge').replace(/[^\w가-힣-]/g,'_'),
-    fps:30,
-    width:ST.settings.ratio==='9:16'?1080:1920,
-    height:ST.settings.ratio==='9:16'?1920:1080,
-    use_effects:useEffects,
-    scenes:scenes
-  };
-
-  try{
-    var r=await fetch(CAPCUT_SERVER+'/render_video',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    var d=await r.json();
-    if(d.success){
-      sbLog('✓ mp4 렌더링 완료: '+d.output_path,'ok');
-      alert('🎉 mp4 렌더링 완료!\n\n파일 위치:\n'+d.output_path+'\n\n씬 수: '+d.scene_count+'개');
-    } else {
-      sbLog('렌더링 실패: '+(d.error||'알 수 없음'),'err');
-      alert('렌더링 실패:\n\n'+(d.error||'알 수 없음'));
-    }
-  }catch(e){
-    sbLog('오류: '+e.message,'err');
-    alert('오류: '+e.message);
-  }
+    if(d.success){sbLog('CapCut draft 생성 완료! 경로: '+d.draft_path,'ok');alert('✓ CapCut Draft 생성 완료!\n\n'+d.draft_path+'\n\n'+d.next_step);}
+    else{sbLog('오류: '+d.error,'err');alert('오류: '+d.error);}
+  }catch(e){sbLog('서버 오류: '+e.message,'err');}
 }
 
 async function renderWithFFmpeg(){
@@ -2141,12 +1972,7 @@ if (typeof window !== 'undefined') {
 }
 
 async function applyExtensionImage(sceneIdx, imageUrl, base64) {
-  console.log('[SF] applyExtensionImage 호출:', sceneIdx, 'base64?', !!base64, 'url:', imageUrl);
-  if (!P.scenes || !P.scenes[sceneIdx]) {
-    console.warn('[SF] 씬 '+sceneIdx+' 없음. 총 씬 수:', P.scenes?P.scenes.length:0);
-    sbLog && sbLog('씬 '+(sceneIdx+1)+'을(를) 찾을 수 없음','err');
-    return;
-  }
+  if (!P.scenes || !P.scenes[sceneIdx]) return;
   try {
     var blob;
     if (base64) {
@@ -2158,28 +1984,20 @@ async function applyExtensionImage(sceneIdx, imageUrl, base64) {
       var u8arr = new Uint8Array(n);
       while (n--) { u8arr[n] = bstr.charCodeAt(n); }
       blob = new Blob([u8arr], { type: mime });
-      console.log('[SF] base64 → Blob 변환 성공, 크기:', blob.size);
-    } else if (imageUrl) {
+    } else {
       // fallback: fetch 시도
       var r = await fetch(imageUrl);
       blob = await r.blob();
-      console.log('[SF] URL fetch 성공, 크기:', blob.size);
-    } else {
-      console.warn('[SF] base64도 URL도 없음');
-      return;
     }
     P.scenes[sceneIdx].imgBlob = blob;
     P.scenes[sceneIdx].hasImg  = true;
     P.scenes[sceneIdx].status  = 'done';
-    // saveBlob(type, sceneId, blob) 올바른 형식
-    await saveBlob('img', sceneIdx, blob);
+    await saveBlob(P.id + '_img_' + sceneIdx, blob);
     autoSave();
-    if (typeof renderSB === 'function') renderSB();
-    if (typeof sbLog === 'function') sbLog('✓ 이미지 적용 완료: 장면 ' + (sceneIdx+1), 'ok');
-    console.log('[SF] ✓ 씬 '+(sceneIdx+1)+' 이미지 적용 완료');
+    renderSB();
+    sbLog('이미지 적용 완료: 장면 ' + (sceneIdx+1), 'ok');
   } catch(e) {
-    console.error('[SF] applyExtensionImage 오류:', e);
-    if (typeof sbLog === 'function') sbLog('이미지 적용 오류: ' + e.message, 'err');
+    sbLog('이미지 적용 오류: ' + e.message, 'err');
   }
 }
 
