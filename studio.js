@@ -146,7 +146,8 @@ var VOICES={
     {id:'JBFqnCBsd6RMkjVDRZzb',name:'Raj',desc:'Indian Male',region:'IN',gender:'남',model:'multilingual'},
     // 🇸🇦 아랍어
     {id:'piTKgcLEGmPE4e6mEKli',name:'Layla',desc:'Arabic Female',region:'AR',gender:'여',model:'multilingual'},
-  ]  gemini31flash:[
+  ],
+  gemini31flash:[
     // ── 여성 ──
     {id:'Aoede',name:'Aoede',desc:'Breezy, Bright',region:'ALL',gender:'여'},
     {id:'Kore',name:'Kore',desc:'Firm, Authoritative',region:'ALL',gender:'여'},
@@ -1093,10 +1094,31 @@ function hideProgBar(){var w=el('genProgWrap');if(w)w.style.display='none';}
 function buildPrompt(scene){
   var parts=[];
   if(scene.imagePrompt)parts.push(scene.imagePrompt);else parts.push(scene.narration||'');
+
+  // 1. 선택된 이미지 스타일
   var style=ST.settings.globalStyle;if(style)parts.push(style);
+
+  // 2. 전역 프롬프트 (공통)
   var gp2=ST.settings.globalPrompt;if(gp2)parts.push(gp2);
-  var chars=(ST.settings.characters||[]).filter(function(c){return c.name||c.desc;}).map(function(c){return c.name+': '+c.desc;}).join('; ');
-  if(chars)parts.push('Characters: '+chars);
+
+  // 3. 씬에 등장하는 캐릭터만 (이름 언급된 경우)
+  var sceneText = ((scene.imagePrompt||'') + ' ' + (scene.narration||'') + ' ' + (scene.title||'')).toLowerCase();
+  var matchedChars = (ST.settings.characters||[]).filter(function(c){
+    if(!c.name) return false;
+    return sceneText.indexOf(c.name.toLowerCase().trim())>-1;
+  });
+  if(matchedChars.length){
+    var charDescs = matchedChars.map(function(c){return c.name+': '+(c.desc||'');}).join('; ');
+    parts.push('Characters in scene: '+charDescs);
+  }
+
+  // 4. 마스코트는 모든 씬에 자동 등장
+  var mascots = ST.settings.mascots || [];
+  if(mascots.length > 0){
+    var mascotName = ST.settings.mascotName || '채널 마스코트';
+    parts.push('Include the channel mascot in the scene (the mascot is shown in the reference image)');
+  }
+
   return parts.join(', ');
 }
 
@@ -1111,7 +1133,7 @@ async function genImg1(i){
   var retries=0,maxRetry=1;
   while(retries<=maxRetry){
     try{
-      var blob=await generateImg(key,buildPrompt(P.scenes[i]));
+      var blob=await generateImg(key,buildPrompt(P.scenes[i]),i);
       P.scenes[i].imgBlob=blob;
       await saveBlob('img',i,blob);
       P.scenes[i].status='img_done';
@@ -1168,7 +1190,7 @@ async function genAllImg(){
     var retries=0;
     while(retries<=1){
       try{
-        var blob=await generateImg(key,buildPrompt(P.scenes[i]));
+        var blob=await generateImg(key,buildPrompt(P.scenes[i]),i);
         P.scenes[i].imgBlob=blob;await saveBlob('img',i,blob);P.scenes[i].status='img_done';done++;
         sbLog('장면 '+(i+1)+'/'+total+' 이미지 ✓','ok');break;
       }catch(e){
@@ -1334,7 +1356,7 @@ function renderChars(){
   list.innerHTML=html;
   var addBtn=el('charAdd');if(addBtn)addBtn.style.display=chars.length>=5?'none':'flex';
 }
-function addChar(){if(!ST.settings.characters)ST.settings.characters=[];if(ST.settings.characters.length>=5){alert('최대 5개');return;}ST.settings.characters.push({name:'',desc:'',imgUrl:null});renderChars();autoSave();}
+function addChar(){if(!ST.settings.characters)ST.settings.characters=[];if(ST.settings.characters.length>=10){alert('최대 10개');return;}ST.settings.characters.push({name:'',desc:'',imgUrl:null});renderChars();autoSave();}
 function delChar(i){ST.settings.characters.splice(i,1);renderChars();autoSave();}
 function clickCharThumb(i){charEditIdx=i;el('charImgInput').click();}
 async function charImgUploaded(input){
@@ -1362,14 +1384,157 @@ async function addStyleRef(input){
 function renderMascots(){
   var ms=ST.settings.mascots||[],list=el('mascotList');if(!list)return;
   var html=ms.map(function(m,i){return '<div class="ref-item"><img src="'+m+'"><button class="ref-del" onclick="ST.settings.mascots.splice('+i+',1);renderMascots();autoSave()">✕</button></div>';}).join('');
-  if(ms.length<5)html+='<div class="ref-add" onclick="document.getElementById(\'mascotInput\').click()">+</div>';
+  if(ms.length<3)html+='<div class="ref-add" onclick="document.getElementById(\'mascotInput\').click()">+</div>';
   list.innerHTML=html;
 }
 async function addMascot(input){
   if(!ST.settings.mascots)ST.settings.mascots=[];
-  var toAdd=Array.from(input.files).slice(0,5-ST.settings.mascots.length);
+  var toAdd=Array.from(input.files).slice(0,3-ST.settings.mascots.length);
   for(var i=0;i<toAdd.length;i++){var b64=await blobToB64(toAdd[i]);ST.settings.mascots.push(b64);}
   renderMascots();autoSave();
+}
+
+// ── 캐릭터/마스코트/스타일 탭 전환 ─────────────────
+function showCsTab(name){
+  var tabs=['char','mascot','style'];
+  tabs.forEach(function(t){
+    var tabBtn=el('cs-tab-'+t), pane=el('cs-pane-'+t);
+    if(tabBtn){
+      if(t===name){
+        tabBtn.classList.add('cs-tab-on');
+        tabBtn.style.color='var(--text)';
+        tabBtn.style.fontWeight='700';
+        tabBtn.style.borderBottom='2px solid var(--accent)';
+      } else {
+        tabBtn.classList.remove('cs-tab-on');
+        tabBtn.style.color='var(--text2)';
+        tabBtn.style.fontWeight='normal';
+        tabBtn.style.borderBottom='2px solid transparent';
+      }
+    }
+    if(pane) pane.style.display=(t===name)?'block':'none';
+  });
+  if(name==='style') renderStyleGallery();
+}
+
+// ── 이미지 스타일 프리셋 (각 스타일마다 샘플 이미지) ─────
+// 프리뷰 이미지는 Pollinations.ai의 간단한 생성 URL 사용 (무료, 공개)
+var STYLE_PRESETS = [
+  {id:'cinematic',  name:'시네마틱',     prompt:'cinematic photo, 4K, dramatic lighting, ultra realistic, film grain',
+   emoji:'🎬', color:'#1f2937'},
+  {id:'anime',      name:'애니메이션',   prompt:'anime style, detailed illustration, vibrant colors, studio ghibli inspired',
+   emoji:'🌸', color:'#ec4899'},
+  {id:'comic',      name:'만화',         prompt:'american comic book style, halftone dots, bold outlines, vibrant colors',
+   emoji:'💥', color:'#f59e0b'},
+  {id:'watercolor', name:'수채화',       prompt:'watercolor painting, soft pastel colors, artistic brushstrokes, loose style',
+   emoji:'🎨', color:'#06b6d4'},
+  {id:'oilpaint',   name:'유화',         prompt:'oil painting, thick brushstrokes, classical art style, rich colors',
+   emoji:'🖼️', color:'#92400e'},
+  {id:'pixel',      name:'픽셀 아트',    prompt:'pixel art, 16-bit retro video game style, limited color palette',
+   emoji:'👾', color:'#8b5cf6'},
+  {id:'3drender',   name:'3D 렌더링',    prompt:'3D render, octane render, realistic materials, studio lighting, detailed',
+   emoji:'💎', color:'#64748b'},
+  {id:'lowpoly',    name:'로우폴리',     prompt:'low poly 3D art, geometric shapes, flat shading, minimalist',
+   emoji:'🔷', color:'#3b82f6'},
+  {id:'cyberpunk',  name:'사이버펑크',   prompt:'cyberpunk style, neon lights, futuristic, blade runner inspired, rain, dark atmosphere',
+   emoji:'🌆', color:'#a855f7'},
+  {id:'fantasy',    name:'판타지',       prompt:'epic fantasy art, magical atmosphere, detailed, concept art style',
+   emoji:'🧙', color:'#7c3aed'},
+  {id:'noir',       name:'느와르',       prompt:'film noir, black and white, high contrast, dramatic shadows, 1940s style',
+   emoji:'🎭', color:'#374151'},
+  {id:'vintage',    name:'빈티지',       prompt:'vintage photograph, sepia tone, 1970s aesthetic, film grain, nostalgic',
+   emoji:'📽️', color:'#78350f'},
+  {id:'minimal',    name:'미니멀',       prompt:'minimalist flat design, clean lines, simple shapes, limited color palette',
+   emoji:'◼️', color:'#e5e7eb'},
+  {id:'sketch',     name:'스케치',       prompt:'pencil sketch, hand-drawn illustration, cross-hatching, black and white',
+   emoji:'✏️', color:'#6b7280'},
+  {id:'ink',        name:'잉크 드로잉',  prompt:'ink drawing, black ink on white paper, detailed linework, manga inspired',
+   emoji:'🖋️', color:'#1f2937'},
+  {id:'isometric',  name:'아이소메트릭', prompt:'isometric illustration, 45-degree angle, clean vector style, miniature scene',
+   emoji:'📐', color:'#10b981'},
+  {id:'steampunk',  name:'스팀펑크',     prompt:'steampunk style, brass gears, Victorian era, mechanical details, sepia tones',
+   emoji:'⚙️', color:'#b45309'},
+  {id:'vaporwave',  name:'베이퍼웨이브', prompt:'vaporwave aesthetic, pink and cyan neon, 80s retro, glitch art, palm trees',
+   emoji:'🌴', color:'#f472b6'},
+  {id:'chibi',      name:'치비',         prompt:'chibi style, cute small characters, big heads, kawaii, pastel colors',
+   emoji:'🎀', color:'#fbbf24'},
+  {id:'realistic',  name:'사실적',       prompt:'photorealistic, hyperdetailed, 8K, professional photography, DSLR',
+   emoji:'📸', color:'#1e40af'},
+  {id:'impressionist',name:'인상주의',   prompt:'impressionist painting, monet style, visible brushstrokes, soft light',
+   emoji:'🌺', color:'#fca5a5'},
+  {id:'popart',     name:'팝아트',       prompt:'pop art style, Andy Warhol inspired, bold colors, repeated patterns',
+   emoji:'🎪', color:'#ef4444'},
+  {id:'abstract',   name:'추상화',       prompt:'abstract art, geometric shapes, bold colors, modern art, non-representational',
+   emoji:'🔶', color:'#f97316'},
+  {id:'claymation', name:'클레이메이션', prompt:'claymation style, stop motion, handmade feel, Aardman inspired, cute',
+   emoji:'🧸', color:'#fbbf24'},
+  {id:'pixar',      name:'픽사 스타일',  prompt:'Pixar animation style, 3D cartoon, smooth surfaces, expressive characters',
+   emoji:'🎬', color:'#0ea5e9'},
+  {id:'disney',     name:'디즈니 스타일',prompt:'classic Disney animation style, expressive, colorful, family friendly',
+   emoji:'🏰', color:'#c084fc'},
+  {id:'ukiyoe',     name:'우키요에',     prompt:'ukiyo-e style, traditional Japanese woodblock print, Hokusai inspired',
+   emoji:'🗻', color:'#dc2626'},
+  {id:'children',   name:'동화책',       prompt:"children's book illustration, storybook style, soft colors, whimsical, cute",
+   emoji:'📖', color:'#fde047'},
+  {id:'gothic',     name:'고딕',         prompt:'gothic dark art, medieval, mysterious, dark atmosphere, detailed',
+   emoji:'🦇', color:'#1f2937'},
+  {id:'surreal',    name:'초현실주의',   prompt:'surreal art, dreamlike, Salvador Dali inspired, impossible scenes, unusual',
+   emoji:'🌀', color:'#8b5cf6'},
+];
+
+// 현재 선택된 스타일 ID 배열 (다중 선택 가능)
+function getSelectedStyles(){
+  if(!Array.isArray(ST.settings.selectedStyles)) ST.settings.selectedStyles=[];
+  return ST.settings.selectedStyles;
+}
+
+function renderStyleGallery(){
+  var gallery=el('styleGallery');
+  if(!gallery) return;
+  var selected=getSelectedStyles();
+  gallery.innerHTML=STYLE_PRESETS.map(function(s){
+    var isSel = selected.indexOf(s.id)>-1;
+    // 각 스타일의 프리뷰 이미지 (Pollinations.ai 무료 이미지 생성 API)
+    var previewPrompt = encodeURIComponent('portrait, '+s.prompt);
+    var previewUrl = 'https://image.pollinations.ai/prompt/'+previewPrompt+'?width=200&height=200&nologo=true&seed=42&model=flux';
+    return '<div class="style-card'+(isSel?' style-sel':'')+'" onclick="toggleStyle(\''+s.id+'\')" '
+      +'style="position:relative;cursor:pointer;border:2px solid '+(isSel?'var(--accent)':'var(--border)')+';border-radius:8px;overflow:hidden;background:'+s.color+';aspect-ratio:1;transition:all .2s">'
+      +'<img src="'+previewUrl+'" alt="'+s.name+'" loading="lazy" '
+        +'style="width:100%;height:100%;object-fit:cover;opacity:.85" '
+        +'onerror="this.style.display=\'none\';this.nextElementSibling.style.fontSize=\'36px\'">'
+      +'<div style="position:absolute;top:6px;left:6px;font-size:20px">'+s.emoji+'</div>'
+      +'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.85));padding:12px 8px 6px;color:#fff;font-size:11px;font-weight:700;text-align:center">'+s.name+'</div>'
+      +(isSel?'<div style="position:absolute;top:6px;right:6px;background:var(--accent);color:#000;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">✓</div>':'')
+      +'</div>';
+  }).join('');
+  // 선택된 스타일 표시 업데이트
+  var selLabel=el('styleSelected');
+  if(selLabel){
+    if(selected.length===0){
+      selLabel.innerHTML='<span style="color:var(--text3)">선택된 스타일 없음</span>';
+    } else {
+      selLabel.innerHTML=selected.map(function(id){
+        var s=STYLE_PRESETS.find(function(x){return x.id===id;});
+        return s?'<span style="display:inline-block;background:'+s.color+';color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;margin:2px;font-weight:700">'+s.emoji+' '+s.name+' <span onclick="toggleStyle(\''+s.id+'\');event.stopPropagation()" style="margin-left:6px;cursor:pointer;opacity:.7">✕</span></span>':'';
+      }).join(' ');
+    }
+  }
+}
+
+function toggleStyle(id){
+  var sel=getSelectedStyles();
+  var idx=sel.indexOf(id);
+  if(idx>-1) sel.splice(idx,1);
+  else sel.push(id);
+  ST.settings.selectedStyles=sel;
+  // globalStyle에 선택된 스타일들의 프롬프트 결합
+  var prompts=sel.map(function(sid){
+    var s=STYLE_PRESETS.find(function(x){return x.id===sid;});
+    return s?s.prompt:'';
+  }).filter(Boolean);
+  ST.settings.globalStyle=prompts.join(', ');
+  renderStyleGallery();
+  autoSave();
 }
 
 // ── 타임라인 ───────────────────────────────────────
@@ -2248,26 +2413,49 @@ async function generateImg(key,prompt,sceneIdx){
     var imgResp=await fetch(d.data[0].url);return await imgResp.blob();
   }
 
-  // ─ 참조 이미지 수집 (캐릭터 + 스타일) ─
+  // ─ 참조 이미지 수집 (마스코트 + 매칭된 캐릭터 + 스타일) ─
   var refImages = [];
-  var chars = (ST.settings.characters||[]).filter(function(c){return c.imgUrl;});
-  var styleRefs = (ST.settings.styleRefs||[]).filter(function(r){return r;});
+  var sceneText = '';
+  try {
+    if (typeof sceneIdx==='number' && P && P.scenes && P.scenes[sceneIdx]) {
+      var sc = P.scenes[sceneIdx];
+      sceneText = ((sc.imagePrompt||'') + ' ' + (sc.narration||'') + ' ' + (sc.title||'')).toLowerCase();
+    } else {
+      sceneText = (prompt||'').toLowerCase();
+    }
+  } catch(e) {}
 
-  // 캐릭터 이미지 우선 추가 (최대 5개)
-  chars.slice(0,5).forEach(function(c){
-    if(c.imgUrl && c.imgUrl.indexOf('data:')===0){
-      var arr = c.imgUrl.split(',');
+  // 1. 마스코트는 항상 포함 (최대 3개)
+  var mascots = (ST.settings.mascots||[]).filter(function(m){return m;});
+  mascots.slice(0,3).forEach(function(m){
+    if(m && m.indexOf && m.indexOf('data:')===0){
+      var arr = m.split(',');
       var mime = (arr[0].match(/:(.*?);/)||[])[1] || 'image/png';
-      refImages.push({mime:mime, data:arr[1]});
+      refImages.push({mime:mime, data:arr[1], type:'mascot'});
     }
   });
 
-  // 스타일 참조 이미지 추가 (최대 3개)
+  // 2. 캐릭터: 씬 텍스트에 이름 언급된 것만 (최대 3개)
+  var chars = (ST.settings.characters||[]).filter(function(c){
+    if(!c.imgUrl) return false;
+    if(!c.name) return false;
+    return sceneText.indexOf(c.name.toLowerCase().trim())>-1;
+  });
+  chars.slice(0,3).forEach(function(c){
+    if(c.imgUrl && c.imgUrl.indexOf('data:')===0){
+      var arr = c.imgUrl.split(',');
+      var mime = (arr[0].match(/:(.*?);/)||[])[1] || 'image/png';
+      refImages.push({mime:mime, data:arr[1], type:'character', name:c.name});
+    }
+  });
+
+  // 3. 스타일 참조 이미지 (최대 3개)
+  var styleRefs = (ST.settings.styleRefs||[]).filter(function(r){return r;});
   styleRefs.slice(0,3).forEach(function(s){
-    if(s && s.indexOf('data:')===0){
+    if(s && s.indexOf && s.indexOf('data:')===0){
       var arr2 = s.split(',');
       var mime2 = (arr2[0].match(/:(.*?);/)||[])[1] || 'image/png';
-      refImages.push({mime:mime2, data:arr2[1]});
+      refImages.push({mime:mime2, data:arr2[1], type:'style'});
     }
   });
 
@@ -2528,4 +2716,8 @@ function toggleCharStylePanel(){
   var open=panel.style.display!=='none';
   panel.style.display=open?'none':'block';
   if(toggle)toggle.textContent=open?'▼ 펼치기':'▲ 접기';
+  // 펼칠 때 스타일 갤러리 미리 렌더 (아직 안 그려졌다면)
+  if(!open && typeof renderStyleGallery==='function'){
+    setTimeout(renderStyleGallery, 50);
+  }
 }
